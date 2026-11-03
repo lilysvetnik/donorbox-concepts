@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Supporter segments: concept prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#EEF0F3; --surface:#FFFFFF; --surface-2:#F7F8FA; --ink:#111827; --ink-2:#374151; --muted:#6B7280;
+  --line:#E5E7EB; --line-2:#D1D5DB; --blue:#2F6FED; --blue-ink:#1D4ED8; --blue-soft:#EAF1FE; --blue-line:#A9C3F7;
+  --navy:#1E2A45; --green-soft:#E7F6EC; --green-ink:#1F7A45; --gray-soft:#F1F2F4;
+  --amber-soft:#FFF4E5; --amber-ink:#8A4B00; --red-soft:#FDECEC; --red-ink:#A61B1B;
+  --note-bg:#FFF6D1; --note-line:#EAD58A; --note-ink:#4A3A00; --pin:#F5C518; --pin-ink:#2B2200;
+  --shadow:0 12px 40px rgba(17,24,39,.18);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#0F141C; --surface:#161C26; --surface-2:#1B2230; --ink:#E8EBF0; --ink-2:#C6CCD6; --muted:#8C95A3;
+    --line:#2A3342; --line-2:#364152; --blue:#5B8DF6; --blue-ink:#9DBBFA; --blue-soft:#1C2A45; --blue-line:#34508A;
+    --navy:#0B1220; --green-soft:#16301F; --green-ink:#7FD3A0; --gray-soft:#232B38;
+    --amber-soft:#33260F; --amber-ink:#F2C27A; --red-soft:#3A1A1A; --red-ink:#F2A3A3;
+    --note-bg:#2E2A17; --note-line:#5A4F22; --note-ink:#F1E3A6; --pin:#E0B82E; --pin-ink:#1A1400;
+    --shadow:0 12px 40px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0F141C; --surface:#161C26; --surface-2:#1B2230; --ink:#E8EBF0; --ink-2:#C6CCD6; --muted:#8C95A3;
+  --line:#2A3342; --line-2:#364152; --blue:#5B8DF6; --blue-ink:#9DBBFA; --blue-soft:#1C2A45; --blue-line:#34508A;
+  --navy:#0B1220; --green-soft:#16301F; --green-ink:#7FD3A0; --gray-soft:#232B38;
+  --amber-soft:#33260F; --amber-ink:#F2C27A; --red-soft:#3A1A1A; --red-ink:#F2A3A3;
+  --note-bg:#2E2A17; --note-line:#5A4F22; --note-ink:#F1E3A6; --pin:#E0B82E; --pin-ink:#1A1400;
+  --shadow:0 12px 40px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1500px;margin:0 auto;padding:24px 24px 48px}
+
+/* Review chrome */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 32px;margin-bottom:16px}
+.top h1{font-size:22px;line-height:1.2;margin:0 0 4px;font-weight:700;letter-spacing:-.01em}
+.top p{margin:0;color:var(--muted);max-width:70ch}
+.tabs{display:flex;gap:4px;margin-left:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px}
+.tabs button{border:0;background:transparent;padding:7px 14px;border-radius:7px;font-weight:600;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--blue-soft);color:var(--blue-ink)}
+.steps{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;align-items:center}
+.step{flex:0 0 auto;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);padding:8px 12px 8px 8px;border-radius:999px;font-weight:500;color:var(--ink-2)}
+.step .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--gray-soft);color:var(--muted)}
+.step[aria-current="step"]{border-color:var(--blue);color:var(--blue-ink);background:var(--blue-soft)}
+.step[aria-current="step"] .n{background:var(--blue);color:#fff}
+.notes-toggle{margin-left:auto;flex:0 0 auto;display:flex;gap:8px;align-items:center;color:var(--muted);font-weight:500;border:0;background:none;padding:6px}
+.notes-toggle .sw{width:34px;height:20px;border-radius:999px;background:var(--line-2);position:relative;transition:background .15s}
+.notes-toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .15s}
+.notes-toggle[aria-pressed="true"] .sw{background:var(--pin)}
+.notes-toggle[aria-pressed="true"] .sw::after{transform:translateX(14px)}
+
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+.stage.no-notes{grid-template-columns:minmax(0,1fr)}
+@media (max-width:1100px){.stage{grid-template-columns:minmax(0,1fr)}}
+
+/* Margin notes */
+.notes{position:sticky;top:16px;display:flex;flex-direction:column;gap:12px}
+.notes h2{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 2px}
+.note{background:var(--note-bg);border:1px solid var(--note-line);color:var(--note-ink);border-radius:4px 14px 14px 14px;padding:12px 14px 13px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px}
+.note b{font-weight:600}
+.note p{margin:0;grid-column:2;font-size:13px}
+.pin{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--pin);color:var(--pin-ink);font-size:11px;font-weight:700;border:2px solid var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.25);vertical-align:middle;margin-left:6px;flex:0 0 auto}
+.note .pin{margin:0;border-color:var(--note-bg)}
+.hide-notes .pin{display:none}
+
+/* Mock app */
+.app{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-height:760px;position:relative}
+.side{width:64px;flex:0 0 64px;background:var(--navy);display:flex;flex-direction:column;align-items:center;gap:22px;padding-top:20px}
+.side i{display:block;width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.3)}
+.side i.logo{width:30px;height:30px;border-radius:8px;background:#E11D48}
+.side i.on{background:rgba(255,255,255,.9)}
+.main{flex:1;min-width:0;padding:22px 32px 36px;display:flex;flex-direction:column;gap:18px}
+.gsearch{display:flex;gap:16px;align-items:center}
+.gsearch .box{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 14px;color:var(--muted)}
+.gsearch .org{font-weight:600;white-space:nowrap}
+.titlebar{display:flex;align-items:center;gap:12px}
+.titlebar h3{font-size:26px;font-weight:600;margin:0;letter-spacing:-.01em}
+.btn{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:9px 14px;font-weight:600;white-space:nowrap}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.link{border-color:transparent;background:transparent;color:var(--blue-ink);padding:6px 4px}
+.btn:hover{filter:brightness(.97)}
+.spacer{flex:1}
+
+/* Buckets */
+.reach{display:flex;flex-wrap:wrap;align-items:center;gap:8px;position:relative}
+.reach .label{font-weight:600;margin-right:4px}
+.bucket{position:relative}
+.bbtn{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600}
+.bbtn .chev{color:var(--muted);font-size:11px;transition:transform .15s}
+.bbtn[aria-expanded="true"]{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.bbtn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.bbtn.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+.bbtn.selected .x{opacity:.85;margin-left:2px}
+.menu{position:absolute;top:calc(100% + 8px);left:0;z-index:20;width:340px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:8px}
+.menu .mh{padding:8px 10px 6px;color:var(--muted);font-size:12px}
+.seg{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;border-radius:8px;padding:10px}
+.seg:hover,.seg:focus-visible{background:var(--surface-2)}
+.seg .t{display:block;font-weight:600}
+.seg .r{display:block;color:var(--muted);font-size:12.5px}
+.seg .go{margin-left:auto;color:var(--muted)}
+.ev{color:var(--blue-ink);font-weight:600;border-bottom:1.5px dashed var(--blue-line);padding-bottom:1px}
+.mhint{margin:0 10px 6px;padding:8px 10px;border-radius:8px;background:var(--blue-soft);color:var(--ink-2);font-size:12.5px}
+.details{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--muted)}
+.chip{border:1px dashed var(--line-2);background:var(--surface);border-radius:8px;padding:6px 11px;color:var(--ink);font-weight:500}
+
+/* Picked segment panel */
+.panel{background:var(--surface);border:1px solid var(--blue-line);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.crumb{font-size:12px;color:var(--muted);font-weight:500}
+.ph{display:flex;align-items:center;gap:10px}
+.ph h4{margin:0;font-size:19px;font-weight:600}
+.tag{font-size:12px;font-weight:600;border-radius:6px;padding:2px 8px;background:var(--gray-soft);color:var(--ink-2)}
+.rules{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.rule{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:14.5px}
+.rule .k{font-weight:600}
+.val{position:relative;display:inline-block}
+.vbtn{border:1px solid var(--blue-line);background:var(--surface);color:var(--blue-ink);font-weight:600;border-radius:7px;padding:4px 10px}
+.vbtn[aria-expanded="true"]{background:var(--blue-soft)}
+.vmenu{position:absolute;top:calc(100% + 6px);left:0;z-index:25;min-width:170px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px}
+.vmenu button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:7px 10px}
+.vmenu button:hover{background:var(--surface-2)}
+.vmenu button[aria-checked="true"]{color:var(--blue-ink);font-weight:600}
+.rm{border:0;background:transparent;color:var(--muted);font-size:15px;padding:2px 6px;border-radius:6px}
+.rm:hover{background:var(--gray-soft)}
+.hint{display:flex;gap:8px;color:var(--ink-2);font-size:13.5px}
+.promo{border-radius:12px;border:1px solid var(--blue-line);background:linear-gradient(135deg,var(--blue-soft),var(--surface) 75%);overflow:hidden}
+.ptip{display:flex;gap:8px;padding:12px 16px 4px;color:var(--ink);font-size:14.5px;font-weight:500}
+.pact{display:flex;align-items:center;gap:12px;padding:6px 16px 14px;flex-wrap:wrap}
+.pact .ptext{flex:1;min-width:220px;color:var(--ink-2);font-size:13.5px}
+.pact .ptext b{color:var(--blue-ink)}
+.bolt{width:28px;height:28px;border-radius:8px;display:inline-grid;place-items:center;background:var(--blue);color:#fff;font-size:14px;flex:0 0 auto}
+.narrow{display:flex;align-items:center;gap:8px;position:relative;flex-wrap:wrap}
+.nmenu{position:absolute;top:calc(100% + 6px);left:0;z-index:25;width:260px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px}
+.nmenu button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:8px 10px}
+.nmenu button:hover{background:var(--surface-2)}
+.nmenu small{display:block;color:var(--muted)}
+.nmenu{width:280px;max-height:420px;overflow:auto}
+.ngh{padding:8px 10px 4px;font-size:12px;font-weight:600;color:var(--muted)}
+
+.adv .alead{margin:0;color:var(--ink-2)}
+.arow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.aconn{width:46px;color:var(--muted);font-weight:500;font-size:13px}
+.abox{display:inline-block;border:1px solid var(--line-2);background:var(--surface);border-radius:7px;padding:4px 10px}
+.abox.sel{min-width:160px}
+.aval{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}
+.aconn.join{border:1px solid var(--blue-line);background:var(--blue-soft);color:var(--blue-ink);font-weight:600;border-radius:7px;padding:3px 8px;width:auto;min-width:46px;font-size:13px}
+.arow.grp{align-items:flex-start}
+.arow.grp .agroup{flex:1}
+.seggroup{border-style:solid;border-color:var(--line)}
+.seggroup .ag-h{color:var(--ink-2)}
+.ornote{font-size:13px;color:var(--ink-2);background:var(--blue-soft);border-radius:8px;padding:6px 10px}
+.agroup{border:1px dashed var(--blue-line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.ag-h{font-size:12.5px;font-weight:600;color:var(--blue-ink)}
+.aadd{display:flex;gap:12px}
+.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.actions .count{font-size:16px;font-weight:600}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.stat .l{color:var(--muted);font-weight:500;font-size:13px}
+.stat .v{font-size:28px;font-weight:600;letter-spacing:-.01em;margin-top:4px}
+.stat .c{color:var(--muted);font-size:12px;margin-top:2px}
+@media (max-width:700px){.stats{grid-template-columns:1fr}}
+
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th{font-size:12px;font-weight:500;color:var(--muted);text-align:left;background:var(--surface-2);padding:11px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+td.name{font-weight:600}
+td.src{color:var(--green-ink);font-weight:500}
+th.new,td.new{background:color-mix(in srgb,var(--green-soft) 55%,transparent)}
+.badge{display:inline-block;font-size:12px;font-weight:500;border-radius:6px;padding:1px 7px;margin-left:6px;background:var(--gray-soft);color:var(--ink-2)}
+.badge.ok{background:var(--green-soft);color:var(--green-ink)}
+.badge.warn{background:var(--amber-soft);color:var(--amber-ink)}
+.badge.bad{background:var(--red-soft);color:var(--red-ink)}
+.tfoot{padding:12px 16px;color:var(--muted);font-size:13px}
+.empty{padding:28px 16px;color:var(--ink-2)}
+
+/* Modal */
+.overlay{position:absolute;inset:0;background:rgba(15,23,42,.45);display:flex;justify-content:center;align-items:flex-start;padding:40px 16px;z-index:40;overflow:auto}
+.modal{width:min(680px,100%);background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:22px 24px;display:flex;flex-direction:column;gap:16px}
+.mh2{display:flex;align-items:flex-start;gap:12px}
+.mh2 h4{margin:0;font-size:19px;font-weight:600}
+.mh2 p{margin:2px 0 0;color:var(--muted)}
+.sect h5{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.who{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.who small{display:block;color:var(--muted);margin-top:4px}
+.mail{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.day{background:var(--blue-soft);color:var(--blue-ink);font-weight:600;border-radius:6px;padding:3px 8px;font-size:12.5px;white-space:nowrap}
+.mail .s{font-weight:600}
+.mail small{display:block;color:var(--muted)}
+.stopl{display:flex;flex-wrap:wrap;gap:6px}
+.stopl span{background:var(--gray-soft);border-radius:7px;padding:5px 10px;font-size:13px}
+.radio{display:flex;align-items:center;gap:10px;padding:6px 0;border:0;background:none;text-align:left}
+.radio .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--line-2);display:inline-block;flex:0 0 auto}
+.radio[aria-checked="true"] .dot{border-color:var(--blue);box-shadow:inset 0 0 0 3px var(--surface);background:var(--blue)}
+.em .titlebar{margin-top:-6px}
+.emtabs{display:flex;flex-wrap:wrap;gap:6px 26px;border-bottom:1px solid var(--line);padding-bottom:10px;color:var(--blue-ink)}
+.emtabs span{padding-bottom:2px}
+.emtabs .on{font-weight:600;border-bottom:2px solid var(--blue)}
+.ctxbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--blue-soft);border-radius:10px;padding:10px 14px;color:var(--ink-2)}
+.mjframe{border:2px dashed var(--line-2);border-radius:12px;background:var(--surface);overflow:hidden}
+.mjhead{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.mjtitle{font-size:16px}
+.mjback{color:#1F5C5C;font-size:18px}
+.mjbtn{background:#1F5C5C;color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:600}
+.mjbody{display:grid;grid-template-columns:1fr 200px;gap:16px;padding:18px;background-color:var(--surface-2);background-image:radial-gradient(var(--line-2) 1px,transparent 1px);background-size:16px 16px;min-height:460px}
+@media (max-width:900px){.mjbody{grid-template-columns:1fr}}
+.mjcanvas{display:flex;flex-direction:column;align-items:center}
+.blk{position:relative;width:min(340px,100%);background:var(--surface);border:1px solid var(--line);border-left:4px solid #7FC6B5;border-radius:8px;padding:10px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.blk.bmail{border-left-color:#A78BFA}
+.blk.event{border-left-color:#5BB98B}
+.blk.exit{border-left-color:#9CA3AF}
+.blk .bt{display:flex;align-items:center;gap:8px;font-weight:500}
+.blk .bb{margin-top:6px;font-size:13px;color:var(--ink-2)}
+.blk .muted{color:var(--muted)}
+.blk .thumb{position:absolute;right:12px;top:12px;width:44px;height:52px;border-radius:4px;background:linear-gradient(var(--line) 0 0) 6px 10px/32px 4px no-repeat,linear-gradient(var(--line) 0 0) 6px 20px/26px 3px no-repeat,linear-gradient(var(--line) 0 0) 6px 27px/30px 3px no-repeat,var(--surface-2);border:1px solid var(--line)}
+.blk.bmail .bt,.blk.bmail .bb{padding-right:52px}
+.blk .pin{position:absolute;right:-12px;top:-10px;margin:0}
+.bi{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;background:var(--surface-2);font-size:13px}
+.conn{width:2px;height:22px;background:var(--line-2)}
+.mjcanvas .conn:last-child{display:none}
+.drop{width:min(340px,100%);border:2px dashed var(--blue-line);border-radius:8px;padding:18px;text-align:center;color:var(--muted);font-size:13px}
+.mjpal{align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:4px}
+.mjpal div{display:flex;align-items:center;gap:10px;padding:8px}
+.modal.wide{width:min(760px,100%)}
+.pvbar{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.pvbar .btn{padding:4px 12px}
+.pvwarn{background:var(--amber-soft);color:var(--amber-ink);border-radius:10px;padding:10px 14px;font-size:13.5px}
+.inbox{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ihead{background:var(--surface-2);padding:10px 14px;font-size:13px;display:flex;flex-direction:column;gap:3px;border-bottom:1px solid var(--line)}
+.ihead .muted{color:var(--muted);display:inline-block;width:56px}
+.email.pv{width:100%;border:0}
+.gap{border:2px dashed #C9CDD4;background:#F4F5F7;color:#6B7280;border-radius:8px;padding:12px;text-align:center;font-size:13px}
+.gapi{border:1px dashed #C9CDD4;background:#F4F5F7;color:#6B7280;border-radius:4px;padding:0 6px}
+.sample{color:#374151;font-style:italic}
+.logo-s,.photo-s{display:inline-block;background:#E5E7EB;color:#6B7280;border-radius:6px;padding:10px 16px}
+.orglogo{height:48px;width:auto;display:block}
+.pvlogo{display:flex;justify-content:center}
+.orgphoto{border-radius:8px;background:linear-gradient(135deg,#FDE8D7,#F6C9A6);height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.orgphoto span{font-size:44px}
+.orgphoto small{color:#7C3E12}
+.pvlink{color:#6B7280;text-align:center;font-size:12px}
+.filled{display:flex;flex-direction:column;align-items:center;gap:4px}
+.filled .orgphoto{width:100%}
+.ephb{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.ephb .btn{font-size:13px;padding:6px 12px}
+.edin{font:inherit;color:#111827;width:100%;border-radius:8px;padding:10px 12px;border:2px solid #D1D5DB;background:#fff;resize:vertical}
+.edin:placeholder-shown{border:2px dashed #E0A100;background:#FFF6D1}
+.edin::placeholder{color:#6B4E00}
+.savedsender{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.savedsender:hover{border-color:var(--blue)}
+.orline{text-align:center;color:var(--muted);font-size:13px}
+.din{width:100%;font:inherit;color:var(--ink)}
+.derr{color:var(--red-ink);display:block;margin-top:6px}
+.muted2{color:var(--muted);display:block;margin-top:6px}
+.provider{position:relative;display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:14px}
+.provider small{display:block;color:var(--muted)}
+.cf{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#F38020;color:#fff;font-size:22px;flex:0 0 auto}
+.modal > .pin{align-self:flex-start}
+.dlist{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;color:var(--ink-2)}
+.connecting{display:flex;align-items:center;gap:12px;padding:24px 4px;color:var(--ink-2)}
+.spin{width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--blue);animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.verified{display:flex;gap:14px;align-items:center;background:var(--green-soft);border-radius:12px;padding:14px}
+.verified small{display:block;color:var(--ink-2)}
+.vbig{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--green-ink);color:#fff;font-weight:700}
+table.dns{min-width:560px}
+table.dns code{font-size:12px}
+.mail .rm[disabled]{opacity:.35;cursor:not-allowed}
+.removed{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;margin-top:4px}
+.rmchip{display:inline-flex;align-items:center;gap:4px;background:var(--gray-soft);border-radius:8px;padding:2px 4px 2px 10px;color:var(--ink-2)}
+.rmchip .btn{text-decoration:none;padding:4px 6px;font-size:13px}
+.checklist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.checklist li{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.checklist li span:nth-child(2){flex:1}
+.checklist small{display:block;color:var(--muted)}
+.checklist .cb{width:20px;height:20px;border-radius:50%;border:2px solid var(--line-2);display:grid;place-items:center;font-size:12px;flex:0 0 auto}
+.checklist li.ok .cb{background:var(--green-soft);border-color:var(--green-ink);color:var(--green-ink)}
+.st{font-weight:600}.st.ok{color:var(--green-ink)}.st.warn{color:var(--amber-ink)}
+.hintline{color:var(--muted);font-size:13px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.edhead{display:flex;align-items:center;gap:10px;background:#1f2329;color:#fff;padding:10px 16px}
+.edbtn{border:1px solid #6b7280;border-radius:6px;padding:6px 12px;font-size:13px;background:transparent;color:#fff}
+.edlink{border:0;background:transparent;color:#fff;padding:4px 0;font-size:14px}
+.edbtn:hover,.edlink:hover{filter:brightness(1.15)}
+.edbtn.blue{background:#2F6FED;border-color:#2F6FED}
+.edbody{display:grid;grid-template-columns:150px 1fr;min-height:520px}
+@media (max-width:800px){.edbody{grid-template-columns:1fr}.edside{display:none}}
+.edside{border-right:1px solid var(--line);padding:12px;display:grid;grid-template-columns:1fr;gap:8px;align-content:start}
+.edside div{border:1px solid var(--line);border-radius:6px;padding:10px;text-align:center;font-size:12px;color:var(--ink-2)}
+.edcanvas{background:var(--surface-2);padding:20px;display:flex;justify-content:center}
+.email{position:relative;width:min(520px,100%);background:#fff;color:#111827;padding:24px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line)}
+.email h4{margin:4px 0 0;font-size:20px;text-align:center}
+.email p{margin:0}
+.eph{border:2px dashed #E0A100;background:#FFF6D1;color:#6B4E00;border-radius:8px;padding:14px;text-align:center;font-weight:500}
+.phs{color:#8A6100;text-align:center}
+.edcta{align-self:center;background:#2F6FED;color:#fff;border-radius:8px;padding:10px 22px;font-weight:600}
+.email .pin{position:absolute;right:-12px}
+.back{align-self:flex-start;margin:-6px 0 -8px -4px}
+.field{border:1px solid var(--line-2);border-radius:8px;padding:9px 12px;background:var(--surface)}
+.tag.plan{background:var(--blue-soft);color:var(--blue-ink);margin-left:6px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.choices{grid-template-columns:1fr}}
+.choice{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;border:1px solid var(--line-2);background:var(--surface);border-radius:12px;padding:16px}
+.choice:hover{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.choice b{font-size:15px}
+.choice span{color:var(--ink-2);font-size:13px}
+.choice .badge{margin:0}
+.choice .go{color:var(--blue-ink);font-weight:600;margin-top:auto}
+.choice.off{opacity:.6;background:var(--surface-2)}
+.choice.off:hover{border-color:var(--line-2);box-shadow:none}
+.buildsteps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:b}
+.buildsteps li{counter-increment:b;display:grid;grid-template-columns:28px 1fr;gap:2px 12px;border:1px solid var(--line);border-radius:10px;padding:12px}
+.buildsteps li::before{content:counter(b);grid-row:span 2;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--gray-soft);color:var(--ink-2);font-weight:700;font-size:12px}
+.buildsteps li.done::before{content:"✓";background:var(--green-soft);color:var(--green-ink)}
+.buildsteps span{color:var(--ink-2);font-size:13px}
+.mfoot{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:14px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:10px;font-weight:500;z-index:100;box-shadow:var(--shadow)}
+
+/* Definitions tab */
+.defs{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px 32px;display:flex;flex-direction:column;gap:24px}
+.defs h2{margin:0;font-size:20px}
+.defs .lead{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.terms{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1000px){.terms{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.terms{grid-template-columns:1fr}}
+.term{border-top:3px solid var(--blue);padding-top:12px}
+.term h3{margin:0 0 2px;font-size:17px}
+.term .q{color:var(--muted);font-weight:600;font-size:13px;margin-bottom:6px}
+.term p{margin:0 0 8px}
+.term .ex{color:var(--ink-2);font-size:13px}
+.buckets-def{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1000px){.buckets-def{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.buckets-def{grid-template-columns:1fr}}
+.bd h3{margin:0 0 4px;font-size:15px}
+.bd p{margin:0 0 8px;color:var(--muted)}
+.bd ul{margin:0;padding-left:18px}
+.bd li{margin-bottom:4px}
+.bd li span{color:var(--muted)}
+.open{background:var(--note-bg);border:1px solid var(--note-line);color:var(--note-ink);border-radius:12px;padding:14px 18px}
+.open h3{margin:0 0 6px;font-size:15px}
+.open ul{margin:0;padding-left:18px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:700px){.main{padding:16px}.side{display:none}.wrap{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script>
+(function(){
+const TODAY = new Date('2026-11-03T12:00:00');
+const DAY = 86400000, MONTH = 30.4375*DAY;
+
+// ---------- Sample supporters (illustrative) ----------
+// [name, subscribed, plan, planChangedDaysAgo, gifts: [date, amount, campaign]]
+const RAW = [
+ ['Sarah Chen',true,'active',0,[['2024-07-01',5000,'Winter Coat Drive'],['2025-07-15',5000,'Winter Coat Drive'],['2026-07-22',5028,'Winter Coat Drive'],['2026-08-22',50,'Sustainers Fund'],['2026-09-22',50,'Sustainers Fund'],['2026-10-22',50,'Sustainers Fund']]],
+ ['Oliver Johnson',true,'cancelled',40,[['2025-12-01',2000,'Giving Tuesday'],['2026-06-08',100,'Sustainers Fund'],['2026-07-08',100,'Sustainers Fund'],['2026-08-08',100,'Sustainers Fund']]],
+ ['James O’Brien',true,'active',0,[['2026-08-10',250,'Sustainers Fund'],['2026-09-10',250,'Sustainers Fund'],['2026-10-10',250,'Sustainers Fund']]],
+ ['Noah Clark',true,null,0,[['2026-10-20',100,'Feed the Community']]],
+ ['Maya Singh',false,null,0,[['2026-10-28',50,'School Lunch Fund']]],
+ ['Marcus Patel',true,null,0,[['2024-03-10',2000,'Spring Appeal'],['2025-05-01',1500,'School Lunch Fund'],['2026-04-12',250,'Feed the Community']]],
+ ['Aisha Wright',true,null,0,[['2025-03-02',100,'Feed the Community'],['2026-03-02',100,'Feed the Community']]],
+ ['Daniel Kim',true,null,0,[['2025-02-27',1000,'Spring Appeal'],['2026-02-27',1000,'Spring Appeal']]],
+ ['Priya Shah',true,null,0,[['2024-12-03',500,'Giving Tuesday'],['2026-01-18',500,'Feed the Community']]],
+ ['Tom Becker',true,null,0,[['2025-12-09',75,'Giving Tuesday']]],
+ ['Lena Ortiz',false,'paused',20,[['2025-09-21',300,'Feed the Community'],['2025-10-21',300,'Feed the Community'],['2025-11-21',300,'Feed the Community']]],
+ ['Grace Liu',true,null,0,[['2024-06-10',400,'Winter Coat Drive'],['2025-06-10',400,'Winter Coat Drive']]],
+ ['Omar Haddad',true,null,0,[['2023-09-01',150,'Spring Appeal'],['2024-09-01',150,'Spring Appeal']]],
+ ['Helen Brooks',false,null,0,[['2023-12-12',25000,'Spring Appeal']]],
+ ['Ruth Adeyemi',true,null,0,[['2023-05-01',200,'Spring Appeal'],['2026-09-15',200,'Feed the Community']]],
+ ['Ethan Moore',true,'failed',3,[['2026-07-05',40,'School Lunch Fund'],['2026-08-05',40,'School Lunch Fund'],['2026-09-05',40,'School Lunch Fund']]],
+ ['Zoe Martin',true,null,0,[['2025-11-25',60,'Giving Tuesday'],['2026-06-14',120,'Feed the Community'],['2026-09-30',180,'Feed the Community']]],
+ ['Hannah Lee',true,null,0,[['2025-06-01',80,'Feed the Community'],['2026-06-20',80,'Spring Appeal']]],
+ ['Victor Alvarez',true,null,0,[['2022-05-05',3000,'Winter Coat Drive'],['2024-11-11',4000,'Winter Coat Drive'],['2026-10-01',5000,'Winter Coat Drive']]]
+];
+const PEOPLE = RAW.map((r,i)=>{
+  const gifts = r[4].map(g=>({date:new Date(g[0]+'T12:00:00'),amount:g[1],campaign:g[2]})).sort((a,b)=>a.date-b.date);
+  return {name:r[0],email:'supporter'+(i+1)+'@example.com',subscribed:r[1],plan:r[2],planDays:r[3],gifts,
+    first:gifts[0],last:gifts[gifts.length-1],lifetime:gifts.reduce((s,g)=>s+g.amount,0)};
+});
+const STATE = {'Sarah Chen':'NY','Oliver Johnson':'PA','James O’Brien':'PA','Noah Clark':'NY','Maya Singh':'CA','Marcus Patel':'TX','Aisha Wright':'IL','Daniel Kim':'CA','Priya Shah':'NY','Tom Becker':'TX','Lena Ortiz':'CA','Grace Liu':'IL','Omar Haddad':'NY','Helen Brooks':'CA','Ruth Adeyemi':'TX','Ethan Moore':'PA','Zoe Martin':'NY','Hannah Lee':'IL','Victor Alvarez':'TX'};
+const SCHED = {'Sarah Chen':'Monthly','Oliver Johnson':'Monthly','James O’Brien':'Quarterly','Lena Ortiz':'Monthly','Ethan Moore':'Weekly'};
+PEOPLE.forEach(x=>{
+  x.gifts.forEach(g=>g.recurring = g.campaign==='Sustainers Fund' || (x.plan && SCHED[x.name] && g.campaign===x.last.campaign && x.gifts.filter(h=>h.campaign===g.campaign).length>1));
+  x.state = STATE[x.name]||'NY';
+  x.schedule = SCHED[x.name]||null;
+  const rec = x.gifts.filter(g=>g.recurring); x.recAmount = rec.length? rec[rec.length-1].amount : 0;
+  x.largest = Math.max(...x.gifts.map(g=>g.amount));
+});
+const CAMPAIGNS = ['Feed the Community','Spring Appeal','Giving Tuesday','Winter Coat Drive','School Lunch Fund','Sustainers Fund'];
+const ago = d => (TODAY-d);
+const money = n => '$'+Math.round(n).toLocaleString('en-US');
+const fdate = d => String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')+'/'+d.getFullYear();
+const yearOf = d => d.getFullYear();
+const THIS_YEAR = 2026, LAST_YEAR = 2025;
+
+// ---------- Parameter option sets ----------
+const OPT = {
+  days:[7,14,30,60,90].map(v=>({v,l:v+' days'})),
+  cdays:[30,60,90,180].map(v=>({v,l:v+' days'})),
+  months:[1,2,3,6,9,12,18,24,36].map(v=>({v,l:v+(v===1?' month':' months')})),
+  count:[2,3,5,10].map(v=>({v,l:String(v)})),
+  money:[500,1000,2500,5000,9999,10000,25000].map(v=>({v,l:money(v)})),
+  gamt:[25,50,100,250,500,1000].map(v=>({v,l:money(v)})),
+  ramt:[10,25,50,100,250].map(v=>({v,l:money(v)})),
+  gtype:[{v:'one-time',l:'one-time'},{v:'recurring',l:'recurring'}],
+  sched:['Weekly','Monthly','Quarterly','Yearly'].map(v=>({v,l:v})),
+  plan:[{v:'none',l:'no active plan'},{v:'has',l:'has an active plan'}],
+  state:['CA','IL','NY','PA','TX'].map(v=>({v,l:v})),
+  when:[['in30','in the last 30 days'],['in90','in the last 90 days'],['in183','in the last 6 months'],['in365','in the last 12 months'],['over30','more than 30 days ago'],['over90','more than 90 days ago'],['over183','more than 6 months ago'],['over365','more than 12 months ago']].map(a=>({v:a[0],l:a[1]})),
+  camp:null
+};
+
+// ---------- Narrow-down conditions ----------
+// level 'gift': applies to the segment's own gift (first / most recent) when it has one, otherwise to any gift.
+// level 'person': applies to the supporter.
+// when(seg): only offer conditions that make sense for this segment and don't repeat its own rule.
+const notRec = seg => seg.bucket.id!=='rec';
+const gl = (seg,rest) => (seg.giftLabel?seg.giftLabel+' ':seg.ruleOnGift?'That gift ':'Last gift ')+rest;          // "That gift was…" vs "Last gift was…"
+const dn = seg => seg.giftName?seg.giftName:seg.ruleOnGift?'that same donation':'their most recent donation';
+const CONDS = [
+ {id:'campaign',level:'gift',name:'Campaign',desc:'Where the gift came from',opt:'camp',def:'Feed the Community',
+  label:seg=>seg.giftKey?gl(seg,'came through:'):'Gave through:',adv:seg=>[seg.giftKey?'Campaign of '+dn(seg):'Campaign',seg.giftKey?'is':'any donation is'],
+  when:()=>true,gift:(g,v)=>g.campaign===v},
+ {id:'gamt',level:'gift',name:'Gift amount',desc:'Leave out small gifts',opt:'gamt',def:100,
+  label:seg=>seg.giftKey?gl(seg,'was at least:'):'Has a gift of at least:',adv:seg=>[seg.giftKey?'Amount of '+dn(seg):'Donation amount',seg.giftKey?'is at least':'any donation is at least'],
+  when:()=>true,gift:(g,v)=>g.amount>=v},
+ {id:'lastwhen',level:'gift',name:'When',desc:'How long ago the gift was made',opt:'when',def:'in90',
+  label:seg=>seg.giftKey?gl(seg,'was made:'):'Has a gift made:',adv:seg=>[seg.giftKey?'Date of '+dn(seg):'Donation date',seg.giftKey?'is':'any donation is'],
+  // Offered wherever the segment's own rule isn't already about dates (recurring and upgrades).
+  when:seg=>seg.bucket.id==='rec'||seg.bucket.id==='up',gift:(g,v)=>{const d=ago(g.date)/DAY;return v.startsWith('in')?d<=+v.slice(2):d>+v.slice(4)}},
+ {id:'gtype',level:'gift',name:'One-time or recurring',desc:'What kind of gift it was',opt:'gtype',def:'one-time',
+  label:seg=>seg.giftKey?gl(seg,'was:'):'Has given:',suffix:seg=>seg.giftKey?'':'gifts',adv:seg=>[seg.giftKey?'Type of '+dn(seg):'Donation type',seg.giftKey?'is':'any donation is'],
+  when:seg=>notRec(seg)&&seg.bucket.id!=='up',gift:(g,v)=>(v==='recurring')===!!g.recurring},
+ {id:'plan',level:'person',name:'Recurring plan',desc:'For example, leave out active recurring donors',opt:'plan',def:'none',
+  label:()=>'Recurring plan:',adv:()=>['Recurring plan','is'],
+  when:seg=>notRec(seg)&&!['couldrec','once','new'].includes(seg.id),person:(x,v)=>v==='has'?x.plan==='active':x.plan!=='active'},
+ {id:'sched',level:'person',name:'Schedule',desc:'Weekly, monthly, quarterly or yearly',opt:'sched',def:'Monthly',
+  label:()=>'Schedule:',adv:()=>['Recurring schedule','is'],
+  when:seg=>seg.bucket.id==='rec',person:(x,v)=>x.schedule===v},
+ {id:'ramt',level:'person',name:'Recurring amount',desc:'Amount of each recurring payment',opt:'ramt',def:25,
+  label:()=>'Recurring amount: at least',adv:()=>['Recurring amount','is at least'],
+  when:seg=>seg.bucket.id==='rec',person:(x,v)=>x.recAmount>=v},
+ {id:'largest',level:'person',name:'Largest gift',desc:'Useful for choosing an ask amount',opt:'gamt',def:250,
+  label:()=>'Largest gift: at least',adv:()=>['Largest donation','is at least'],
+  when:seg=>seg.bucket.id==='lapse',person:(x,v)=>x.largest>=v},
+ {id:'total',level:'person',name:'Total donated',desc:'Lifetime giving',opt:'money',def:1000,
+  label:()=>'Total donated: at least',adv:()=>['Total donated','is at least'],
+  when:seg=>!['mid','major','new','once'].includes(seg.id),person:(x,v)=>x.lifetime>=v},
+ {id:'count',level:'person',name:'Number of gifts',desc:'How many times they have given',opt:'count',def:3,
+  label:()=>'Number of gifts: at least',adv:()=>['Number of donations','is at least'],
+  when:seg=>!['once','couldrec','new'].includes(seg.id),person:(x,v)=>x.gifts.length>=v},
+ {id:'state',level:'person',name:'Location',desc:'State or region',opt:'state',def:'NY',
+  label:()=>'Location:',adv:()=>['State','is'],
+  when:()=>true,person:(x,v)=>x.state===v}
+];
+const COND = {}; CONDS.forEach(c=>COND[c.id]=c);
+const condOpts = c => c.opt==='camp' ? CAMPAIGNS.map(v=>({v,l:v})) : OPT[c.opt];
+const activeConds = () => CONDS.filter(c=>S.cond[c.id]!==undefined);
+
+// ---------- Segments, grouped in four buckets ----------
+// giftKey: which single gift the segment is about ('first' / 'last'), so narrowing applies to that same gift.
+const BUCKETS = [
+ {id:'new',name:'New donors',ruleOnGift:true,segs:[
+   {id:'new',name:'New donors',short:p=>'First gift in the last '+p.days+' days',defaults:{days:30},giftKey:'first',
+    rule:[['k','First gift:'],['t','in the last'],['p','days','days']],
+    test:(x,p)=>ago(x.first.date)<=p.days*DAY,
+    hint:'The first weeks after a first gift decide whether someone gives again. A quick thank-you matters most here.',auto:'welcome'}
+ ]},
+ {id:'rec',name:'Recurring donors',segs:[
+   {id:'active',name:'Active recurring',auto:'thankrec',giftKey:'last',short:()=>'Recurring plan is active, any schedule',defaults:{},
+    rule:[['k','Recurring plan:'],['t','active, any schedule']],test:x=>x.plan==='active',
+    hint:'Your most loyal supporters. Thank them and show the impact of steady giving.'},
+   {id:'failed',name:'Payment failed',giftKey:'last',short:()=>'Last recurring payment failed',defaults:{},
+    rule:[['k','Recurring plan:'],['t','last payment failed']],test:x=>x.plan==='failed',
+    hint:'Usually an expired card, not a decision to stop. Ask them to update their details quickly.',auto:'card'},
+   {id:'paused',name:'Paused',auto:'paused',giftKey:'last',short:()=>'Donor paused their recurring plan',defaults:{},
+    rule:[['k','Recurring plan:'],['t','paused by the donor']],test:x=>x.plan==='paused',
+    hint:'They chose to pause. A gentle check-in works better than an ask.'},
+   {id:'cancelled',name:'Cancelled',auto:'winrec',giftKey:'last',short:p=>'Cancelled in the last '+p.days+' days',defaults:{days:90},
+    rule:[['k','Recurring plan:'],['t','cancelled in the last'],['p','days','cdays']],
+    test:(x,p)=>x.plan==='cancelled'&&x.planDays<=p.days,
+    hint:'Recently cancelled donors can often be won back with a lower amount or a different schedule.'}
+ ]},
+ {id:'lapse',name:'Lapsing and lapsed',segs:[
+   {id:'lapsing',name:'Lapsing donors',ruleOnGift:true,short:p=>'Last gift '+p.from+' to '+p.to+' months ago',defaults:{from:6,to:12},giftKey:'last',
+    rule:[['k','Last gift:'],['t','between'],['p','from','months'],['t','and'],['p','to','months'],['t','ago']],
+    test:(x,p)=>{const m=ago(x.last.date)/MONTH;return m>=p.from&&m<p.to},
+    hint:'People in this window are the most likely to give again if you reach out now. After 12 months it gets much harder.',auto:'checkin'},
+   {id:'lapsed',name:'Lapsed donors',auto:'winback',ruleOnGift:true,short:p=>'Last gift over '+p.m+' months ago',defaults:{m:12},giftKey:'last',
+    rule:[['k','Last gift:'],['t','more than'],['p','m','months'],['t','ago']],
+    test:(x,p)=>ago(x.last.date)/MONTH>=p.m,
+    hint:'Harder to win back. A heartfelt update about what has changed since they last gave works best.'},
+   {id:'lyb',name:'Gave last year, not this year',auto:'yearend',short:()=>'Gave last year, nothing yet this year',defaults:{},
+    rule:[['k','Gave:'],['t','last year, nothing so far this year']],
+    test:x=>x.gifts.some(g=>yearOf(g.date)===LAST_YEAR)&&!x.gifts.some(g=>yearOf(g.date)===THIS_YEAR),
+    hint:'Reach out before year end, while last year’s gift is still fresh.'},
+   {id:'syb',name:'Gave before, not recently',auto:'lastcall',short:()=>'Nothing last year or this year',defaults:{},
+    rule:[['k','Gave:'],['t','before last year, nothing since']],
+    test:x=>x.gifts.every(g=>yearOf(g.date)<LAST_YEAR),
+    hint:'Long gone quiet. Worth one win-back message before you stop emailing them.'},
+   {id:'back',name:'Came back',auto:'welcomeback',ruleOnGift:true,short:p=>'Gave again after '+p.m+'+ months away',defaults:{m:12},giftKey:'last',
+    rule:[['k','Last gift:'],['t','in the last 12 months, after'],['p','m','months'],['t','or more without giving']],
+    test:(x,p)=>{if(x.gifts.length<2)return false;const prev=x.gifts[x.gifts.length-2];return ago(x.last.date)<12*MONTH&&(x.last.date-prev.date)>=p.m*MONTH},
+    hint:'Proof that win-back works. A warm “welcome back” keeps them this time.'}
+ ]},
+ {id:'up',name:'Upgrades',segs:[
+   {id:'once',name:'Gave only once',giftKey:'first',giftLabel:'Their gift',giftName:'their only donation',statsLabel:'Their gifts',short:()=>'Exactly 1 one-time gift, never recurring',defaults:{},
+    rule:[['k','Total gifts:'],['t','exactly 1 one-time gift, never recurring']],test:x=>x.gifts.length===1&&!x.plan&&!x.gifts[0].recurring,
+    hint:'Most first-time donors never give again. A second ask turns them into supporters.',auto:'second'},
+   {id:'couldrec',name:'Could give recurring',short:p=>p.n+' or more one-time gifts, no recurring plan',defaults:{n:2},
+    rule:[['k','One-time gifts:'],['p','n','count'],['t','or more, and no recurring plan']],test:(x,p)=>!x.plan&&x.gifts.length>=p.n,
+    hint:'They keep coming back on their own. Invite them to give on a schedule that suits them.',auto:'recurring'},
+   {id:'mid',name:'Mid-level donors',short:p=>money(p.min)+' to '+money(p.max)+' in total',defaults:{min:1000,max:9999},auto:'more',
+    rule:[['k','Lifetime giving:'],['t','between'],['p','min','money'],['t','and'],['p','max','money']],
+    test:(x,p)=>x.lifetime>=p.min&&x.lifetime<=p.max,
+    hint:'Often overlooked. A personal thank-you and a slightly larger ask can move them up.'},
+   {id:'major',name:'Major donors',short:p=>money(p.min)+' or more in total',defaults:{min:10000},
+    rule:[['k','Lifetime giving:'],['p','min','money'],['t','or more']],test:(x,p)=>x.lifetime>=p.min,
+    hint:'Usually best handled one-on-one by staff rather than with automated emails.'}
+ ]}
+];
+const SEG = {}; BUCKETS.forEach(b=>b.segs.forEach(s=>{s.bucket=b;SEG[s.id]=s}));
+
+const AUTOS = {
+  welcome:{name:'Welcome new donors',mails:[['Day 0','Thank you for your first gift','Thank-you'],['Day 7','Here’s what your gift is doing','Impact update'],['Day 30','Meet the people behind the work','Story']],stops:['They give again','They unsubscribe','Day 45 is reached']},
+  checkin:{name:'Check in with lapsing donors',mails:[['Day 0','We miss you: here’s what your gift made possible','Impact update'],['Day 14','A small way to help again','Gentle ask'],['Day 30','One last note from us this season','Final ask']],stops:['They give again','They unsubscribe','Day 45 is reached']},
+  card:{name:'Update payment details',mails:[['Day 0','Your gift didn’t go through','Card update'],['Day 5','A quick reminder about your gift','Card update']],stops:['They update their card','They cancel the plan','Day 14 is reached']},
+  recurring:{name:'Invite to give recurring',mails:[['Day 0','Make your impact last all year','Recurring invite'],['Day 21','Choose a schedule that works for you','Recurring invite']],stops:['They start a recurring plan','They unsubscribe','Day 30 is reached']},
+  second:{name:'Ask for a second gift',mails:[['Day 30','Here’s what your first gift did','Impact update'],['Day 60','Will you give again?','Second-gift ask']],stops:['They give again','They unsubscribe','Day 75 is reached']},
+  thankrec:{name:'Thank new recurring donors',mails:[['Day 0','Thank you for giving regularly','Thank-you'],['Day 60','Here’s what your regular gifts made possible','Impact update']],stops:['They cancel their plan','They unsubscribe','Day 90 is reached']},
+  paused:{name:'Check in on paused gifts',mails:[['Day 0','We noticed you paused your gift','Gentle check-in'],['Day 21','Whenever you’re ready','Gentle ask']],stops:['They resume their plan','They unsubscribe','Day 30 is reached']},
+  winrec:{name:'Win back recurring donors',mails:[['Day 0','Thank you for everything you gave','Thank-you'],['Day 14','Would a smaller amount work for you?','Win-back ask']],stops:['They start a new plan','They give again','They unsubscribe','Day 30 is reached']},
+  winback:{name:'Win back lapsed donors',mails:[['Day 0','It’s been a while: here’s what’s changed','Impact update'],['Day 21','We’d love to have you back','Win-back ask']],stops:['They give again','They unsubscribe','Day 45 is reached']},
+  yearend:{name:'Year-end reminder',mails:[['Day 0','Your support last year mattered','Impact update'],['Day 14','Will you join us again this year?','Year-end ask']],stops:['They give again','They unsubscribe','Day 30 is reached']},
+  lastcall:{name:'One last win-back',mails:[['Day 0','We still think of you','Impact update'],['Day 21','One last note from us','Final ask']],stops:['They give again','They unsubscribe','Day 30 is reached']},
+  welcomeback:{name:'Welcome back',mails:[['Day 0','Welcome back, and thank you','Thank-you'],['Day 30','Here’s what your return made possible','Impact update']],stops:['They unsubscribe','Day 45 is reached']},
+  more:{name:'Ask for a bigger gift',mails:[['Day 0','You’ve made a real difference','Impact update'],['Day 10','Could you go a little further this time?','Upgrade ask']],stops:['They give again','They unsubscribe','Day 30 is reached']}
+};
+const TEMPLATES = ['Thank-you','Impact update','We miss you','Gentle ask','Card update','Recurring invite','Upgrade ask','Welcome back'];
+
+// ---------- Notes per step ----------
+const NOTES = {
+ 1:{title:'Buckets closed (default)',items:[
+   ['bar','A coaching question, any purpose','“Who do you want to find?” invites the user in without assuming what happens next: an email, an export, a report or an automation. Four buttons on one line, so the table stays where users expect it.'],
+   ['details','Fields stay available','The existing filter chips and advanced filter are still here for anyone who wants full control.'],
+   ['stats','No counts on buckets','Counting every segment on every page load is heavy. The only number shown is the result of what the user picked.']]},
+ 2:{title:'One bucket open',items:[
+   ['menu','Each segment says who is in it','Name plus the rule in plain words, so nobody has to guess what “lapsing” means.'],
+   ['menurule','Editable values look editable','Values like “30 days” are underlined in blue, and a line says they can be changed after picking. Without this, users read them as fixed definitions.'],
+   ['bar','Named by who, not by what to do','Segments describe people. Emailing or automating is a separate step.']]},
+ 3:{title:'Segment picked',items:[
+   ['chosen','The pick replaces the bucket','The button now reads “Lapsing donors ✕”, so the current list is always visible and easy to clear.'],
+   ['rule','One rule, in plain words','The blue values are editable. Click one to change it.'],
+   ['hint','The tip sells the automation','One line of fundraising advice explains why the group matters, and right under it the matching automation is offered. Users see why they’d automate before they’re asked to. Segments without a ready-made automation offer building their own.'],
+   ['stats','Numbers follow the list','Cards count the gifts that put people in this list. Lifetime totals move to a caption.'],
+   ['actions','Other things to do with the list','Send a one-off email, export it, or save it as a segment. Automating lives with the tip above, where the reason for it is.'],
+   ['export','Not just for outreach','Export covers reporting, sharing with a board, or working in a spreadsheet.']]},
+ 4:{title:'Adjusting a number',items:[
+   ['rule','Change a value, the list updates','Here 6 months becomes 3. The segment type stays the same.'],
+   ['edited','Marked as edited','An “Edited” tag shows the list no longer uses the defaults. “Reset” brings them back.']]},
+ 5:{title:'Narrowing down (optional)',items:[
+   ['nmenu','Options fit the segment','“Narrow down” only offers details that make sense here, in two groups: about the gift that put them in the list, and about the person. Recurring donors get schedule, recurring amount and their last gift (when, how much, which campaign); lapsing donors get gift amount, recurring plan, largest gift and more.'],
+   ['narrowrule','The user’s own rules have a ✕','The segment’s rule can’t be removed by accident. Only what the user added can.'],
+   ['narrowrule2','Same gift, not two facts','“That gift came through” means the gift that put them in the list. Not any gift, any time.'],
+   ['srccol','Column appears only now','“Came through” shows up because the user filtered by campaign. Remove the rule and it goes away.'],
+   ['save','Save it as their own','“Save as my segment” keeps this version as a dynamic list (next step).']]},
+ 6:{title:'Save as a segment',items:[
+   ['savename','Named for them','The name comes from the segment and the rules they added, so it’s recognisable on the Lists page. They can change it.'],
+   ['savedyn','It’s a dynamic list','Saving creates a dynamic list on the existing Lists page. It refreshes every 30 minutes, so supporters join and leave on their own.'],
+   ['saveplan','Plan question','Dynamic lists are a CRM Unlimited feature today. Since automations build on them, this is a pricing decision to make on purpose.']]},
+ 7:{title:'Automate this: choose',items:[
+   ['choose','Two ways to automate','A ready-made Donorbox automation template, or build your own in the automation builder inside Email Marketing (embedded Mailjet). Available for every segment; the ready-made option only appears where Donorbox has one.'],
+   ['chooselist','Both start from a dynamic list','Either way, Donorbox creates a dynamic list for this segment, and the automation starts when someone is added to it. The list shows on the Lists page, marked as used by an automation.']]},
+ 8:{title:'Ready-made automation',items:[
+   ['autowho','Who enters is the list they built','Donorbox creates the dynamic list when they turn it on.'],
+   ['automails','Ready-made by Donorbox','An automation template sets the steps and timing; each email step uses a Donorbox email template written for nonprofits (not Mailjet’s).'],
+   ['prev','Preview with real supporters','Donorbox fills in each email for an actual supporter in the list, so users see what Marcus will get, with arrows to check others. Parts still to customize show as clear gaps, so a preview never looks ready to send when it isn’t.'],
+   ['autocust','Every email needs the org’s own content','Templates come with clearly marked parts to replace: story, photo, donation link, sign-off. Each shows “Needs your story and details” until customized. Templates customized before show as done.'],
+   ['autorm','Remove emails they don’t want','Each email has a ✕. Removed emails move to a “Removed” line with “Add back”, the checklist only counts the emails that are left, and at least one email has to stay. The waits adjust around what’s left.'],
+   ['autocheck','Nothing sends until it’s ready','“Turn on” stays disabled until every email is customized, sender details are added and the domain is verified. No branding or sender details are assumed.'],
+   ['autostop','When it stops, in plain words','So a “we miss you” email never goes to someone who just gave.'],
+   ['autoenroll','No surprise blasts','The user chooses whether today’s matches are included when they turn it on.'],
+   ['autodep','Depends on Mailjet','Needs Donorbox to create and publish workflows in customer accounts through the API. Open question for Mailjet.']]},
+ 9:{title:'Build your own',items:[
+   ['buildlist','The audience is done for them','Donorbox creates the dynamic list first, so the hardest part (choosing who) is already solved.'],
+   ['buildstart','First block filled in','Best case, the builder opens with “Contact is added to Lapsing donors” as the starting point. Needs Mailjet to allow creating a draft workflow or pre-filling the start block.'],
+   ['buildtoday','What works today','Without that, the user picks the list in the start block themselves. The steps on this screen tell them which one.']]},
+ 10:{title:'In the builder: your own',items:[
+   ['bctx','Donorbox frames the builder','Everything outside the dashed box is Donorbox: who this automation sends to, how many match today, and a way back to the segment. The builder inside is Mailjet’s embedded app, which Donorbox can’t redesign.'],
+   ['bstart','The starting point is filled in','The first block already reads “Contact is added to list: Lapsing donors: Feed the Community”. Needs Mailjet to let Donorbox create a draft like this. Without it, the user selects the list here themselves.'],
+   ['btabs','No Segmentation tab','Hidden so segments are only built on the Supporters page. This is a request to Mailjet.'],
+   ['bpublish','Publishing still asks about existing supporters','When the user publishes, Mailjet asks whether to include people already in the list. The context line above reminds them how many that is.']]},
+ 11:{title:'In the builder: adjusting a ready-made automation',items:[
+   ['rsteps','Two layers of template','The automation template sets the steps and waits. Each email step uses an email template, shown with its name.'],
+   ['rstop','Stop rule as an Event step','After each email, an Event step waits for a new gift. If they give, they leave the automation. Depends on Mailjet’s Event step reacting to a property our sync updates.'],
+   ['rown','Once adjusted, it’s theirs','After a user changes a ready-made automation, Donorbox can’t update it for them later. The context line tells them before they edit.']]},
+ 13:{title:'Sender and domain',items:[
+   ['dfind','Sender and domain are one step','The sender address tells us the domain. If it’s already verified (or they pick a sender they used before), they’re done. If not, Donorbox (or Entri, which Mailjet uses) finds where the domain is managed and offers one-click setup. Try it twice: the second automation offers the saved sender.'],
+   ['dfree','Free email addresses are caught early','Gmail, Yahoo and similar addresses can’t be verified and often land in spam, so we explain why and ask for an address at their own domain.'],
+   ['done','One click with their provider','“Connect with Cloudflare” signs them in and adds ownership, SPF and DKIM together, merging into any existing SPF record. Depends on the Entri questions for Mailjet, or on Cloudflare’s own one-click setup.'],
+   ['manual','Manual setup stays as a fallback','For providers without one-click setup: the records with copy buttons, plus a way to send them to whoever manages the website.'],
+   ['dinline','Asked at the moment it matters','Sender and domain appear as one item in the “Before you turn it on” checklist, when the user is about to send, instead of a warning banner on every page.']]},
+ 12:{title:'Customize an email',items:[
+   ['eph','Parts to replace are obvious','The template marks exactly what the org must add: logo, a short story, the donation link and a sign-off (photo optional). Nothing about their brand is assumed. Try it: fill them in, save, then open Preview.'],
+   ['elogo','Add the logo once, reuse it','After a logo is added to one email, the others offer “Use the logo from your other email”. In the real editor this could be a saved section.'],
+   ['evar','Variables look like code here','The email editor is Mailjet’s, so personal fields show as [[data:firstname:"friend"]]. Donorbox can at least give each one a friendly fallback like “friend”.'],
+   ['eback','How Donorbox knows it’s done','The editor can’t tell Donorbox when the user saves. Options: check the template through the API when they come back, or Mailjet announcing saves with postMessage (already requested). In this prototype, “Back to automation” marks it done.']]}
+};
+
+// ---------- State ----------
+const fresh = () => ({tab:'proto',openBucket:null,seg:null,params:{},pop:null,narrowMenu:false,cond:{},joinTop:'and',joinGift:'and',modal:null,enroll:'new',notes:true,adv:false,view:null,bmode:'own',custom:{},content:{},draft:{},removed:{},senders:[],verified:[],sname:'',semail:'',already:false,sender:false,domain:false,editTpl:null});
+let S = fresh();
+
+function step(){
+  if(S.modal==='domain') return 13;
+  if(S.view==='editor') return 12;
+  if(S.view==='builder') return S.bmode==='ready'?11:10;
+  if(S.modal==='build') return 9;
+  if(S.modal==='automate'||S.modal==='preview') return 8;
+  if(S.modal==='autochoose') return 7;
+  if(S.modal==='save') return 6;
+  if(activeConds().length) return 5;
+  if(S.seg && (S.pop||edited())) return 4;
+  if(S.seg) return 3;
+  if(S.openBucket) return 2;
+  return 1;
+}
+function edited(){ if(!S.seg) return false; const d=SEG[S.seg].defaults; return Object.keys(d).some(k=>S.params[k]!==d[k]) || usesOr(); }
+function usesOr(){ return S.joinTop==='or'||S.joinGift==='or'; }
+function pin(key){
+  if(!S.notes || S.tab!=='proto') return '';
+  const items = NOTES[step()].items; const i = items.findIndex(it=>it[0]===key);
+  return i<0 ? '' : '<span class="pin" aria-label="Note '+(i+1)+'">'+(i+1)+'</span>';
+}
+
+// ---------- Filtering ----------
+function matchingGift(x,seg){
+  if(seg && seg.giftKey) return [x[seg.giftKey]];
+  return x.gifts;
+}
+function results(){
+  if(!S.seg) return {people:PEOPLE,gifts:PEOPLE.flatMap(x=>x.gifts),scoped:false};
+  const seg=SEG[S.seg]; const p=S.params;
+  const giftConds = activeConds().filter(c=>c.level==='gift'), personConds = activeConds().filter(c=>c.level==='person');
+  const comb = (join,parts) => parts.length===0 ? true : join==='and' ? parts.every(Boolean) : parts.some(Boolean);
+  const giftOk = g => comb(S.joinGift, giftConds.map(c=>c.gift(g,S.cond[c.id])));
+  // The "same gift" group: the segment's own gift rule (if any) plus gift conditions, combined with the group's and / or.
+  const groupOk = x => {
+    if(seg.giftKey){
+      const g = matchingGift(x,seg)[0], parts=[];
+      if(seg.ruleOnGift) parts.push(seg.test(x,p));
+      giftConds.forEach(c=>parts.push(c.gift(g,S.cond[c.id])));
+      return parts.length ? comb(S.joinGift,parts) : null;
+    }
+    return giftConds.length ? x.gifts.some(giftOk) : null;
+  };
+  let people = PEOPLE.filter(x=>{
+    const parts=[];
+    if(!seg.ruleOnGift) parts.push(seg.test(x,p));
+    const gm = groupOk(x); if(gm!==null) parts.push(gm);
+    personConds.forEach(c=>parts.push(c.person(x,S.cond[c.id])));
+    return comb(S.joinTop,parts);
+  });
+  const gifts = people.flatMap(x=>matchingGift(x,seg).filter(g=>!giftConds.length||giftOk(g)));
+  return {people,gifts,scoped:true};
+}
+
+// ---------- Render ----------
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){
+  const root=document.getElementById('root');
+  const st=step();
+  root.className = 'wrap'+(S.notes?'':' hide-notes');
+  root.innerHTML = `
+  <div class="top">
+    <div><h1>Supporter segments: concept prototype</h1>
+    <p>Click through it like the real page, or jump to a step. Data and counts are made-up examples.</p></div>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="${S.tab==='proto'}" data-a="tab" data-v="proto">Prototype</button>
+      <button role="tab" aria-selected="${S.tab==='defs'}" data-a="tab" data-v="defs">How this works</button>
+    </div>
+  </div>
+  ${S.tab==='proto'?`
+  <div class="steps" role="navigation" aria-label="Steps">
+    ${['Buckets closed','Bucket open','Segment picked','Adjust a number','Narrow down','Save as segment','Automate: choose','Ready-made','Build your own','Builder: own','Builder: ready-made','Customize an email','Sender & domain'].map((t,i)=>`<button class="step" data-a="goto" data-v="${i+1}" ${st===i+1?'aria-current="step"':''}><span class="n">${i+1}</span>${t}</button>`).join('')}
+    <button class="notes-toggle" data-a="notes" aria-pressed="${S.notes}"><span class="sw"></span>Notes</button>
+  </div>
+  <div class="stage ${S.notes?'':'no-notes'}">
+    ${renderApp()}
+    ${S.notes?renderNotes(st):''}
+  </div>`:renderDefs()}
+  ${S.toast?`<div class="toast" role="status">${esc(S.toast)}</div>`:''}`;
+}
+function renderNotes(st){
+  const n=NOTES[st];
+  return `<aside class="notes" aria-label="Design notes"><h2>Step ${st}: ${esc(n.title)}</h2>
+    ${n.items.map((it,i)=>`<div class="note"><span class="pin">${i+1}</span><b>${esc(it[1])}</b><p>${esc(it[2])}</p></div>`).join('')}</aside>`;
+}
+function renderApp(){
+  const r=results(); const seg=S.seg?SEG[S.seg]:null;
+  return `<section class="app" aria-label="Supporters page mock">
+    <nav class="side" aria-hidden="true"><i class="logo"></i><i></i><i></i><i class="on"></i><i></i><i></i></nav>
+    ${S.view==='editor'?renderEditor(seg,r):S.view==='builder'?renderBuilder(seg,r):`<div class="main">
+      <div class="gsearch"><div class="box">Search for Supporter, Campaign, Organization and more</div><div class="org">Khalsa Aid International Australia ▾</div></div>
+      <div class="titlebar"><h3>Supporters</h3><span class="spacer"></span><button class="btn primary" data-a="noop" data-v="Adds a supporter">+ Add Supporters</button></div>
+      ${renderBuckets()}
+      ${seg?'':`<div class="details">Or filter by details: ${['Supporter type','Donation date','Total donated','Donation type','Campaign','More filters'].map(c=>`<button class="chip" data-a="noop" data-v="Opens the existing ${c} filter">⊕ ${c}</button>`).join('')}${pin('details')}</div>`}
+      ${seg?(S.adv?renderAdv(seg):renderPanel(seg)):''}
+      ${seg?renderActions(r,seg):''}
+      ${renderStats(r,seg)}
+      ${renderTable(r,seg)}
+    </div>`}
+    ${S.modal==='automate'?renderAutomate(seg,r):''}
+    ${S.modal==='preview'?renderPreview(seg,r):''}
+    ${S.modal==='domain'?renderDomain(seg,r):''}
+    ${S.modal==='save'?renderSave(seg,r):''}
+    ${S.modal==='autochoose'?renderChoose(seg,r):''}
+    ${S.modal==='build'?renderBuild(seg,r):''}
+    ${S.modal==='email'?renderEmail(seg,r):''}
+  </section>`;
+}
+function renderBuckets(){
+  const seg=S.seg?SEG[S.seg]:null;
+  return `<div class="reach"><span class="label">Who do you want to find?</span>
+    ${BUCKETS.map(b=>{
+      const isSel = seg && seg.bucket.id===b.id;
+      const open = S.openBucket===b.id;
+      const btn = isSel
+        ? `<button class="bbtn selected" data-a="bucket" data-v="${b.id}" aria-expanded="${open}" aria-haspopup="true">${esc(seg.name)}<span class="x" data-a="clear" role="button" aria-label="Clear segment" tabindex="0">✕</span></button>${pin('chosen')}`
+        : `<button class="bbtn" data-a="bucket" data-v="${b.id}" aria-expanded="${open}" aria-haspopup="true">${esc(b.name)} <span class="chev">▼</span></button>`;
+      const menu = open ? `<div class="menu" role="menu"><div class="mh">${esc(b.name)}${pin('menu')}</div>
+          <div class="mhint"><span class="ev">Underlined values</span> are starting points. You can change them after you pick.${pin('menurule')}</div>
+          ${b.segs.map(s=>`<button class="seg" role="menuitem" data-a="pick" data-v="${s.id}"><span><span class="t">${esc(s.name)}</span><span class="r">${staticRule(s)}</span></span><span class="go">›</span></button>`).join('')}</div>` : '';
+      return `<div class="bucket">${btn}${menu}</div>`;
+    }).join('')}${pin('bar')}</div>`;
+}
+function staticRule(s){
+  return s.rule.map(t=>{
+    if(t[0]!=='p') return esc(t[1]);
+    const o=OPT[t[2]].find(o=>o.v===s.defaults[t[1]]);
+    return `<span class="ev">${esc(o?o.l:s.defaults[t[1]])}</span>`;
+  }).join(' ');
+}
+function valPill(seg,key,optKey){
+  const cur=S.params[key]; const opts=OPT[optKey]; const label=(opts.find(o=>o.v===cur)||{l:cur}).l;
+  const open=S.pop===key;
+  return `<span class="val"><button class="vbtn" data-a="pop" data-v="${key}" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="set" data-k="${key}" data-v="${o.v}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
+}
+// Advanced filter rows, pre-filled from the picked segment.
+// Each row: [field, operator, value tokens]. Value tokens reuse the editable pills.
+const ADV = {
+  new:[['First donation date','is in the last',[['p','days','days']]]],
+  active:[['Recurring plan status','is',[['t','Active']]]],
+  failed:[['Recurring plan status','is',[['t','Payment failed']]]],
+  paused:[['Recurring plan status','is',[['t','Paused']]]],
+  cancelled:[['Recurring plan status','is',[['t','Cancelled']]],['Plan cancelled date','is in the last',[['p','days','cdays']]]],
+  lapsing:[['Most recent donation date','is between',[['p','to','months'],['t','ago and'],['p','from','months'],['t','ago']]]],
+  lapsed:[['Most recent donation date','is more than',[['p','m','months'],['t','ago']]]],
+  lyb:[['Donation date','is in',[['t','Last year']]],['Donation date','is not in',[['t','This year']]]],
+  syb:[['Donation date','is before',[['t','Last year']]],['Donation date','is not in',[['t','Last year or this year']]]],
+  back:[['Most recent donation date','is in the last',[['t','12 months']]],['Time since the donation before it','is at least',[['p','m','months']]]],
+  couldrec:[['Donation type','is',[['t','One-time only']]],['Number of donations','is at least',[['p','n','count']]],['Recurring plan','does not exist',[]]],
+  once:[['Number of donations','is',[['t','1']]],['Donation type','is',[['t','One-time']]],['Recurring plan','has never existed',[]]],
+  mid:[['Total donated','is between',[['p','min','money'],['t','and'],['p','max','money']]]],
+  major:[['Total donated','is at least',[['p','min','money']]]]
+};
+function advVal(seg,tokens){return tokens.map(t=>t[0]==='p'?valPill(seg,t[1],t[2]):`<span class="abox">${esc(t[1])}</span>`).join(' ')}
+function advRow(conn,field,op,val,removeId){
+  return `<div class="arow">${conn}<span class="abox sel">${esc(field)} ▾</span><span class="abox sel">${esc(op)} ▾</span><span class="aval">${val}</span>${removeId?`<button class="rm" data-a="ucond" data-v="${removeId}" aria-label="Remove condition">✕</button>`:''}</div>`;
+}
+const WHERE = '<span class="aconn">Where</span>', FIXED_AND = '<span class="aconn" title="Part of the segment’s definition">and</span>';
+function joinBtn(level){const j=level==='top'?S.joinTop:S.joinGift;return `<button class="aconn join" data-a="join" data-v="${level}" aria-label="Switch between and and or. Now: ${j}">${j} ▾</button>`}
+function condPill(c){
+  const key='c:'+c.id, cur=S.cond[c.id], opts=condOpts(c), open=S.pop===key;
+  const label=(opts.find(o=>o.v===cur)||{l:cur}).l;
+  return `<span class="val"><button class="vbtn" data-a="pop" data-v="${key}" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="cset" data-c="${c.id}" data-v="${esc(o.v)}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
+}
+function renderAdv(seg){
+  const rows=ADV[seg.id];
+  const gc=activeConds().filter(c=>c.level==='gift'), pc=activeConds().filter(c=>c.level==='person');
+  // Segment rows always combine with a fixed "and": they are the segment's definition.
+  const segItems = rows.map(r=>({cells:[r[0],r[1],advVal(seg,r[2]),null],fixed:true}));
+  const giftItems = [...(seg.ruleOnGift?segItems:[]), ...gc.map(c=>({cells:[...c.adv(seg),condPill(c),c.id]}))];
+  const conn = (items,i,level) => i===0 ? WHERE : (items[i].fixed && items[i-1].fixed ? FIXED_AND : joinBtn(level));
+  const top = [];
+  if(!seg.ruleOnGift){
+    if(segItems.length===1) top.push({cells:segItems[0].cells});
+    else if(segItems.length) top.push({html:`<div class="agroup seggroup"><div class="ag-h">${esc(seg.name)}</div>${segItems.map((it,i)=>advRow(i?FIXED_AND:WHERE,...it.cells)).join('')}</div>`});
+  }
+  if(giftItems.length){
+    const which = seg.giftName?seg.giftName:seg.giftKey==='first'?'their first donation':seg.giftKey==='last'?'their most recent donation':'any one of their donations';
+    top.push({html:`<div class="agroup"><div class="ag-h">Conditions on ${which} (these apply to the same gift)</div>${giftItems.map((it,i)=>advRow(conn(giftItems,i,'gift'),...it.cells)).join('')}</div>`});
+  }
+  pc.forEach(c=>top.push({cells:[...c.adv(seg),condPill(c),c.id]}));
+  const body = top.map((t,i)=>{const cn=i?joinBtn('top'):WHERE;return t.cells?advRow(cn,...t.cells):`<div class="arow grp">${cn}${t.html}</div>`}).join('');
+  return `<div class="panel adv">
+    <div class="ph"><h4>Advanced filter</h4><span class="spacer"></span><button class="btn link" data-a="advback">Back to simple view</button></div>
+    <p class="alead">Started from <b>${esc(seg.name)}</b>. Change any condition, or add your own. Click <b>and</b> to switch to <b>or</b>.${pin('join')}</p>
+    <div class="rules">${body}
+      <div class="aadd"><span class="narrow"><button class="btn link" data-a="nmenu" aria-expanded="${S.narrowMenu}">+ Add condition</button>${S.narrowMenu?`<div class="nmenu" role="menu">${CONDS.filter(c=>c.when(seg)&&S.cond[c.id]===undefined).map(c=>`<button role="menuitem" data-a="addc" data-v="${c.id}">${esc(c.name)}<small>${esc(c.desc)}</small></button>`).join('')||'<div class="ngh">All available details are already added</div>'}</div>`:''}</span><button class="btn link" data-a="noop" data-v="Adds a group with its own and / or">+ Add condition group</button></div>
+    </div>
+    <div class="actions"><span class="spacer"></span><button class="btn" data-a="advback">Cancel</button><button class="btn primary" data-a="advapply">Apply</button></div>
+  </div>`;
+}
+function renderPanel(seg){
+  const avail = CONDS.filter(c=>c.when(seg));
+  const giftPhrase = seg.giftName?seg.giftName.replace('donation','gift'):seg.giftKey==='first'?'their first gift':seg.giftKey==='last'?'their most recent gift':'their gifts';
+  const item = c => S.cond[c.id]!==undefined ? '' : `<button role="menuitem" data-a="addc" data-v="${c.id}">${esc(c.name)}<small>${esc(c.desc)}</small></button>`;
+  const giftItems = avail.filter(c=>c.level==='gift').map(item).join(''), personItems = avail.filter(c=>c.level==='person').map(item).join('');
+  return `<div class="panel">
+    <div class="crumb">${esc(seg.bucket.name)}  ›  ${esc(seg.name)}</div>
+    <div class="ph"><h4>${esc(seg.name)}</h4>${edited()?`<span class="tag">Edited</span><button class="btn link" data-a="reset">Reset</button>${pin('edited')}`:''}<span class="spacer"></span><button class="btn link" data-a="bucket" data-v="${seg.bucket.id}">Change segment</button></div>
+    <div class="rules">
+      ${usesOr()?`<div class="ornote">Some rules are combined with “or”. <button class="btn link" data-a="adv">See how in the advanced filter</button></div>`:''}
+      <div class="rule">${seg.rule.map(t=>t[0]==='k'?`<span class="k">${esc(t[1])}</span>`:t[0]==='t'?`<span>${esc(t[1])}</span>`:valPill(seg,t[1],t[2])).join('')}${pin('rule')}</div>
+      ${activeConds().map((c,i)=>`<div class="rule"><span class="k">${esc(c.label(seg))}</span>${condPill(c)}${c.suffix&&c.suffix(seg)?`<span>${esc(c.suffix(seg))}</span>`:''}<button class="rm" data-a="ucond" data-v="${c.id}" aria-label="Remove ${esc(c.name)} rule">✕</button>${i===0?pin('narrowrule'):''}${c.level==='gift'&&seg.giftKey&&!activeConds().slice(0,i).some(d=>d.level==='gift')?pin('narrowrule2'):''}</div>`).join('')}
+    </div>
+    <div class="promo">
+      <div class="ptip"><span aria-hidden="true">💡</span><span>${esc(seg.hint)}</span></div>
+      <div class="pact"><span class="bolt" aria-hidden="true">⚡</span><span class="ptext">${seg.auto?`<b>Do this automatically.</b> “${esc(AUTOS[seg.auto].name)}” sends ${AUTOS[seg.auto].mails.length} emails written for nonprofits as people join this list.`:seg.id==='major'?`<b>A personal touch works best here.</b> Major donors usually respond to staff reaching out directly. You can still set up your own emails.`:`<b>Do this automatically.</b> Send your own emails as people join this list.`}</span><button class="btn ${seg.id==='major'?'':'primary'}" data-a="automate">${seg.id==='major'?'Set up my own emails':'Automate this'}</button>${pin('hint')}</div>
+    </div>
+    <div class="narrow"><button class="btn link" data-a="nmenu" aria-expanded="${S.narrowMenu}">+ Narrow down</button>${pin('nmenu')}
+      ${S.narrowMenu?`<div class="nmenu" role="menu">
+        ${giftItems?`<div class="ngh">About ${giftPhrase}</div>${giftItems}`:''}
+        ${personItems?`<div class="ngh">About the person</div>${personItems}`:''}
+        ${!giftItems&&!personItems?`<div class="ngh">All available details are already added</div>`:''}
+      </div>`:''}
+      <span class="spacer"></span><button class="btn link" data-a="adv">Advanced filter</button></div>
+  </div>`;
+}
+function renderActions(r,seg){
+  return `<div class="actions"><span class="count">${r.people.length} supporter${r.people.length===1?'':'s'}</span><span class="spacer"></span>
+    <button class="btn" data-a="noop" data-v="Downloads this list as a CSV file">Export</button>${pin('export')}
+    <button class="btn" data-a="save">Save as my segment</button>${pin('save')}
+    <button class="btn primary" data-a="email">✉ Send email</button>${pin('actions')}</div>`;
+}
+function renderStats(r,seg){
+  const total=r.gifts.reduce((s,g)=>s+g.amount,0);
+  const life=r.people.reduce((s,x)=>s+x.lifetime,0);
+  let giftsLabel='Donations', amtLabel='Amount', cap='';
+  if(r.scoped){
+    giftsLabel = (S.cond.campaign&&!seg.giftKey)? 'Gifts through '+S.cond.campaign : seg.statsLabel? seg.statsLabel : seg.giftKey==='first'?'Their first gifts': seg.giftKey==='last'?'Their last gifts':'Their matching gifts';
+    amtLabel = 'Amount from those gifts';
+    cap = `<div class="c">Lifetime for these supporters: ${money(life)}</div>`;
+  }
+  return `<div class="stats">
+    <div class="stat"><div class="l">Supporters</div><div class="v">${r.people.length}</div>${pin('stats')}</div>
+    <div class="stat"><div class="l">${esc(giftsLabel)}</div><div class="v">${r.gifts.length}</div></div>
+    <div class="stat"><div class="l">${esc(amtLabel)}</div><div class="v">${money(total)}</div>${cap}</div>
+  </div>`;
+}
+function freq(x){
+  if(x.plan==='active') return 'Recurring plan<span class="badge ok">Active</span>';
+  if(x.plan==='failed') return 'Recurring plan<span class="badge bad">Payment failed</span>';
+  if(x.plan==='paused') return 'Recurring plan<span class="badge warn">Paused</span>';
+  if(x.plan==='cancelled') return 'Recurring plan<span class="badge">Cancelled</span>';
+  return x.gifts.length>1?'Multiple donations':'One-time';
+}
+function renderTable(r,seg){
+  const camp=S.cond.campaign; const showSrc=!!camp;
+  const rows=r.people.slice().sort((a,b)=>b.last.date-a.last.date);
+  return `<div class="tablewrap"><table>
+    <thead><tr><th>Name</th><th>Email</th><th>Last gift</th>${showSrc?`<th class="new">Came through${pin('srccol')}</th>`:''}<th>Total donated</th><th>Number of donations</th><th>Frequency</th></tr></thead>
+    <tbody>${rows.length?rows.map(x=>{const g=seg?matchingGift(x,seg).filter(g=>!camp||g.campaign===camp).slice(-1)[0]:null;return `<tr>
+      <td class="name">${esc(x.name)}</td><td>${x.email}</td><td>${money(x.last.amount)} · ${fdate(x.last.date)}</td>
+      ${showSrc?`<td class="src new">${esc(g?g.campaign:'')}</td>`:''}
+      <td>${money(x.lifetime)}</td><td>${x.gifts.length}</td><td>${freq(x)}</td></tr>`}).join(''):`<tr><td colspan="${showSrc?7:6}" class="empty">No one matches these rules. Try a wider time range, or remove a rule you added.</td></tr>`}</tbody>
+  </table><div class="tfoot">Listing ${rows.length} of ${r.people.length} supporters</div></div>`;
+}
+function plainWho(seg){
+  let s = seg.short(S.params);
+  activeConds().forEach(c=>{const o=condOpts(c).find(o=>o.v===S.cond[c.id]);const l=c.label(seg); s += '; '+l.charAt(0).toLowerCase()+l.slice(1)+' '+(o?o.l:S.cond[c.id])+(c.suffix&&c.suffix(seg)?' '+c.suffix(seg):'');});
+  return s;
+}
+function listName(seg){
+  const parts = activeConds().map(c=>{const o=condOpts(c).find(o=>o.v===S.cond[c.id]);return o?o.l:S.cond[c.id]});
+  return seg.name + (parts.length? ': '+parts.join(', ') : '');
+}
+function renderSave(seg,r){
+  return `<div class="overlay" data-a="closebg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="st">
+    <div class="mh2"><div><h4 id="st">Save as a segment</h4><p>${esc(seg.name)}: ${esc(plainWho(seg))}</p></div><span class="spacer"></span><button class="rm" data-a="close" aria-label="Close">✕</button></div>
+    <div class="sect"><h5>Name${pin('savename')}</h5><div class="field">${esc(listName(seg))}</div></div>
+    <div class="sect"><h5>How it updates${pin('savedyn')}</h5>
+      <div class="who"><b>Dynamic list</b> <span class="tag plan">CRM Unlimited</span>${pin('saveplan')}<small>Updates every 30 minutes, so supporters join and leave as they match these rules. You’ll find it on the Lists page and can use it for emails, exports, reports and automations.</small></div></div>
+    <div class="mfoot"><span class="spacer"></span><button class="btn" data-a="close">Cancel</button><button class="btn primary" data-a="dosave">Save segment</button></div>
+  </div></div>`;
+}
+function renderChoose(seg,r){
+  const a = seg.auto && AUTOS[seg.auto];
+  return `<div class="overlay" data-a="closebg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="ct">
+    <div class="mh2"><div><h4 id="ct">Automate: ${esc(seg.name)}</h4><p>Send emails automatically as supporters join this segment.${pin('choose')}</p></div><span class="spacer"></span><button class="rm" data-a="close" aria-label="Close">✕</button></div>
+    <div class="choices">
+      ${a?`<button class="choice" data-a="pickready"><span class="badge ok">Recommended</span><b>Use a ready-made automation</b><span>${esc(a.name)}: ${live(seg).length} emails written for nonprofits. Add your story and details to each email, then turn it on.</span><span class="go">Choose ›</span></button>`
+        :`<div class="choice off"><b>Use a ready-made automation</b><span>Donorbox doesn’t have a ready-made automation for this segment yet.</span></div>`}
+      <button class="choice" data-a="pickbuild"><b>Build your own</b><span>Choose your own emails and timing. We’ll set up who it goes to.</span><span class="go">Choose ›</span></button>
+    </div>
+    <div class="who" style="font-size:13px">We’ll add “${esc(listName(seg))}” to your Lists. New supporters who match join the automation on their own.${pin('chooselist')}</div>
+  </div></div>`;
+}
+function renderBuild(seg,r){
+  return `<div class="overlay" data-a="closebg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="bt">
+    <button class="btn link back" data-a="back">‹ Back</button>
+    <div class="mh2"><div><h4 id="bt">Build your own automation</h4><p>For ${esc(seg.name)}: ${esc(plainWho(seg))}</p></div><span class="spacer"></span><button class="rm" data-a="close" aria-label="Close">✕</button></div>
+    <ol class="buildsteps">
+      <li class="done"><b>Your audience is ready</b><span>“${esc(listName(seg))}” is in your Lists. New supporters who match join on their own.${pin('buildlist')}</span></li>
+      <li class="done"><b>The starting point is set</b><span>Your automation starts when someone joins this list.${pin('buildstart')}</span></li>
+      <li><b>Add your emails and timing</b><span>Pick an email template for each email and set how long to wait between them. To stop when someone gives again, add an Event step.</span></li>
+    </ol>
+    <div class="who" style="font-size:13px">People who unsubscribed from emails are skipped when each email is sent.${pin('buildtoday')}</div>
+    <div class="mfoot"><span class="spacer"></span><button class="btn" data-a="close">Cancel</button><button class="btn primary" data-a="openbuilder">Open automation builder</button></div>
+  </div></div>`;
+}
+function renderBuilder(seg,r){
+  const ready = S.bmode==='ready', a = seg&&seg.auto?AUTOS[seg.auto]:AUTOS.checkin;
+  const lname = seg?listName(seg):'Lapsing donors';
+  const blk = (cls,icon,title,body,extra) => `<div class="blk ${cls}"><div class="bt"><span class="bi">${icon}</span>${title}</div>${body?`<div class="bb">${body}</div>`:''}${extra||''}</div><div class="conn"></div>`;
+  let flow = blk('start','⚡','Start',`<span class="muted">When this happens:</span> Contact is added to list<br><b>${esc(lname)}</b>`, pin('bstart'));
+  if(!ready){
+    flow += `<div class="drop">⊕ Drag & drop the next block here</div>`;
+  } else {
+    const L=seg?live(seg):a.mails.map((m,i)=>({m,i}));
+    L.forEach(({m},i)=>{
+      flow += blk('bmail','✉',esc(m[1]),`<span class="muted">Email template:</span> ${esc(m[2])}`, `<span class="thumb" aria-hidden="true"></span>${i===0?pin('rsteps'):''}`);
+      if(i<L.length-1){
+        const days = parseInt(L[i+1].m[0].replace(/\D/g,''))-parseInt(m[0].replace(/\D/g,''));
+        flow += blk('event','📍','Event',`Wait up to <b>${days} days</b> for a new gift<br><span class="muted">If they give: exit</span>`, i===0?pin('rstop'):'');
+      }
+    });
+    flow += blk('exit','🏁','Exit','','');
+  }
+  return `<div class="main em">
+    <button class="btn link back" data-a="backsup">‹ Back to Supporters</button>
+    <div class="titlebar"><h3>Email Marketing</h3></div>
+    <div class="emtabs">${['Campaigns','Templates','Images','Stats','Automations','Insights'].map(t=>`<span class="${t==='Automations'?'on':''}">${t}</span>`).join('')}${pin('btabs')}</div>
+    <div class="ctxbar"><span>${ready?'Ready-made automation':'Your automation'} for <b>${esc(lname)}</b>. ${r.people.length} supporter${r.people.length===1?'':'s'} match today; new supporters who match join on their own.${ready?' Changes you make here are yours: Donorbox won’t update this automation later.':''}</span><span class="spacer"></span><button class="btn link" data-a="backsup">View segment</button>${pin('bctx')}${ready?pin('rown'):''}</div>
+    <div class="mjframe">
+      <div class="mjhead"><span class="mjback">←</span><span class="mjtitle">${ready?esc(a.name):'Untitled automation'}</span><span class="tag">Draft</span><span class="spacer"></span><button class="mjbtn" data-a="noop" data-v="Saves the draft">Save draft ▾</button>${pin('bpublish')}</div>
+      <div class="mjbody">
+        <div class="mjcanvas">${flow}</div>
+        <div class="mjpal">${[['✉','Send Email'],['⑂','Condition'],['📍','Event'],['⏱','Timer'],['🏁','Exit']].map(x=>`<div><span class="bi">${x[0]}</span>${x[1]}</div>`).join('')}</div>
+      </div>
+    </div>
+  </div>`;
+}
+function renderAutomate(seg,r){
+  const a=AUTOS[seg.auto];
+  const done = live(seg).filter(({i})=>S.custom[ek(seg,i)]).length, all = live(seg).length;
+  const ready = done===all && S.sender;
+  const check = (ok,label,detail,btn) => `<li class="${ok?'ok':''}"><span class="cb">${ok?'✓':''}</span><span><b>${label}</b><small>${detail}</small></span>${btn||''}</li>`;
+  return `<div class="overlay" data-a="closebg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+    <button class="btn link back" data-a="back">‹ Back</button>
+    <div class="mh2"><div><h4 id="mt">${esc(a.name)}</h4><p>A ready-made automation for nonprofits. Add your story and details to each email, then turn it on.</p></div><span class="spacer"></span><button class="rm" data-a="close" aria-label="Close">✕</button></div>
+    <div class="sect"><h5>Who enters${pin('autowho')}</h5><div class="who"><b>${esc(seg.name)}:</b> ${esc(plainWho(seg))}<small>When you turn this on, we’ll add “${esc(listName(seg))}” to your Lists. New supporters who match join on their own.</small></div></div>
+    <div class="sect"><h5>What they get${pin('automails')}</h5>${live(seg).map(({m,i},n,arr)=>{const ok=S.custom[ek(seg,i)];return `<div class="mail"><span class="day">${m[0]}</span><span><span class="s">${esc(m[1])}</span><small>Email template: ${esc(m[2])} · ${ok?'<span class="st ok">Customized</span>':'<span class="st warn">Needs your story and details</span>'}</small></span><span class="spacer"></span><button class="btn link" data-a="preview" data-v="${i}">Preview</button><button class="btn ${ok?'link':''}" data-a="customize" data-v="${i}">${ok?'Edit':'Customize'}</button><button class="rm" data-a="rmmail" data-v="${i}" aria-label="Remove this email" title="${arr.length===1?'An automation needs at least one email':'Remove this email'}" ${arr.length===1?'disabled':''}>✕</button>${n===0?pin('autocust'):''}${n===0?pin('autorm'):''}</div>`}).join('')}
+      ${a.mails.some((m,i)=>S.removed[ek(seg,i)])?`<div class="removed"><span class="muted">Removed:</span> ${a.mails.map((m,i)=>S.removed[ek(seg,i)]?`<span class="rmchip"><s>${m[0]} · ${esc(m[1])}</s> <button class="btn link" data-a="addmail" data-v="${i}">Add back</button></span>`:'').join('')}</div>`:''}</div>
+    <div class="sect"><h5>Stops when${pin('autostop')}</h5><div class="stopl">${a.stops.map(s=>`<span>${esc(s)}</span>`).join('')}</div></div>
+    <div class="sect"><h5>Before you turn it on${pin('autocheck')}</h5><ul class="checklist">
+      ${check(done===all,'Customize your emails',`${done} of ${all} done. Add your own story, photos and donation link to each one.`)}
+      ${check(S.sender,'Choose who emails come from',S.sender?`${esc(S.sname)} &lt;${esc(S.semail)}&gt;`:'Your name and email address. If your domain isn’t verified yet, we’ll do it in one click.',S.sender?`<button class="btn link" data-a="setdomain">Change</button>`:`<button class="btn" data-a="setdomain">Set up</button>`)}
+    </ul></div>
+    <div class="sect"><h5>When you turn it on${pin('autoenroll')}</h5>
+      <button class="radio" role="radio" aria-checked="${S.enroll==='new'}" data-a="enroll" data-v="new"><span class="dot"></span>Only people who join this list from now on</button>
+      <button class="radio" role="radio" aria-checked="${S.enroll==='all'}" data-a="enroll" data-v="all"><span class="dot"></span>Also include the ${r.people.length} supporter${r.people.length===1?'':'s'} in the list today</button></div>
+    <div class="who" style="font-size:13px">People who unsubscribed from emails are skipped when each email is sent.</div>
+    ${pin('autodep')}<div class="mfoot"><button class="btn link" data-a="adjust">Adjust steps and timing</button><span class="spacer"></span>${ready?'':'<span class="hintline">Finish the steps above to turn this on</span>'}<button class="btn" data-a="close">Cancel</button><button class="btn primary" data-a="turnon" ${ready?'':'disabled aria-disabled="true"'}>Turn on</button></div>
+  </div></div>`;
+}
+const ek=(seg,i)=>seg.auto+':'+i;
+const live=(seg)=>AUTOS[seg.auto].mails.map((m,i)=>({m,i})).filter(x=>!S.removed[ek(seg,x.i)]);
+function saveDraft(){ const sg=SEG[S.seg], k=ek(sg,S.editTpl||0), d={...S.draft}; S.content[k]=d; S.custom[k]=!!(d.logo&&d.story&&d.link&&d.signoff); }
+const ORG='Khalsa Aid International Australia';
+const LOGO=`<svg class="orglogo" viewBox="0 0 220 56" role="img" aria-label="${ORG} logo"><circle cx="28" cy="28" r="24" fill="#E8590C"/><text x="28" y="35" text-anchor="middle" font-family="Inter,Arial" font-weight="700" font-size="20" fill="#fff">KA</text><text x="62" y="26" font-family="Inter,Arial" font-weight="700" font-size="17" fill="#1F2937">Khalsa Aid</text><text x="62" y="44" font-family="Inter,Arial" font-size="12" fill="#6B7280">International Australia</text></svg>`;
+const PHOTO=`<div class="orgphoto" role="img" aria-label="Volunteers packing food parcels"><span>🥫🍞🍎</span><small>Food parcels ready for families</small></div>`;
+function renderDomain(seg,r){
+  const d=S.dname||'', st=S.dstep||'start';
+  const head=(t,sub)=>`<div class="mh2"><div><h4 id="dt">${t}</h4><p>${sub}</p></div><span class="spacer"></span><button class="rm" data-a="close" aria-label="Close">✕</button></div>`;
+  let body='';
+  if(st==='start'){
+    body=`${head('Who should these emails come from?','Supporters see this name and address in their inbox.')}
+      ${S.senders.length?`<div class="sect"><h5>Use a sender you’ve set up before</h5>${S.senders.map((x,i)=>`<button class="savedsender" data-a="usesender" data-v="${i}"><span><b>${esc(x.name)}</b> &lt;${esc(x.email)}&gt;</span><span class="badge ok">Verified</span></button>`).join('')}</div><div class="orline">or add a new one</div>`:''}
+      <div class="sect"><h5>Sender name${pin('dfind')}</h5><input class="field din" data-f="sname" value="${esc(S.sname)}" placeholder="e.g. Helping Hands Food Bank" aria-label="Sender name"></div>
+      <div class="sect"><h5>Sender email address</h5><input class="field din" data-f="semail" value="${esc(S.semail)}" placeholder="e.g. hello@yourorganization.org" aria-label="Sender email address">
+        ${S.derr?`<small class="derr">${S.derr}</small>`:'<small class="muted2">Use an address at your organization’s own domain. We’ll check whether it’s verified.</small>'}</div>
+      <div class="mfoot"><button class="btn link" data-a="closedom">‹ Back</button><span class="spacer"></span><button class="btn primary" data-a="dfind">Continue</button></div>`;
+  } else if(st==='free'){
+    body=`${head('Use your organization’s own address','')}
+      <div class="pvwarn">Emails sent from @${esc(d)} addresses through Donorbox are often blocked or end up in spam, because ${esc(d)} doesn’t let other services send on its behalf.${pin('dfree')}</div>
+      <p class="muted2">Use an address at your organization’s domain instead, like hello@yourorganization.org. If you don’t have one yet, your website provider can usually set it up.</p>
+      <div class="mfoot"><button class="btn link" data-a="dstart">‹ Change address</button></div>`;
+  } else if(st==='provider'){
+    body=`${head('Connect '+esc(d),'We found where your domain is managed.')}
+      <div class="provider"><span class="cf" aria-hidden="true">☁</span><div><b>Your domain is managed by Cloudflare</b><small>Sign in to Cloudflare and approve, and we’ll add everything for you. It takes about a minute.</small></div>${pin('dfind')}</div>
+      <ul class="dlist"><li>Proves you own ${esc(d)}${pin('done')}</li><li>Lets inboxes trust your emails (SPF and DKIM)</li><li>Keeps your existing email settings working</li></ul>
+      <div class="mfoot"><button class="btn link" data-a="dmanual">I’ll add the records myself</button>${pin('manual')}<span class="spacer"></span><button class="btn primary" data-a="dconnect">Connect with Cloudflare</button></div>`;
+  } else if(st==='connecting'){
+    body=`${head('Setting up '+esc(d),'This usually takes less than a minute.')}
+      <div class="connecting"><span class="spin" aria-hidden="true"></span><span>Adding your records and checking them…</span></div>`;
+  } else if(st==='manual'){
+    const rows=[['TXT','mailjet._a1b2c3d4','a1b2c3d4e5f6'],['TXT','@','v=spf1 include:spf.mailjet.com ~all'],['TXT','mailjet._domainkey','k=rsa; p=MIGfMA0GCSq…']];
+    body=`${head('Add these records to '+esc(d),'Copy each record into your domain settings, or send them to whoever manages your website.')}
+      <div class="tablewrap"><table class="dns"><thead><tr><th>Type</th><th>Name</th><th>Value</th><th></th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td><code>${r[1]}</code></td><td><code>${r[2]}</code></td><td><button class="btn link" data-a="copy">Copy</button></td></tr>`).join('')}</tbody></table></div>
+      <small class="muted2">Already have an SPF record? Add <code>include:spf.mailjet.com</code> to it instead of creating a second one.</small>
+      <div class="mfoot"><button class="btn link" data-a="dback">‹ Use one-click setup</button><button class="btn link" data-a="noop" data-v="Opens an email with these records to send to your web person">Email these to someone</button><span class="spacer"></span><button class="btn primary" data-a="dcheck">I’ve added them, check now</button></div>`;
+  } else {
+    body=`${head('You’re all set','Emails will come from '+esc(S.sname)+' &lt;'+esc(S.semail)+'&gt;.')}
+      <div class="verified"><span class="vbig" aria-hidden="true">✓</span><div><b>${esc(d)} is ${S.already?'already verified':'verified'}</b><small>${S.already?'You set this up before, so there’s nothing else to do.':'Ownership, SPF and DKIM are all set up.'}</small></div></div>
+      <div class="mfoot"><span class="spacer"></span><button class="btn primary" data-a="ddone">Back to automation</button></div>`;
+  }
+  return `<div class="overlay" data-a="closebg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="dt">${body}${pin('dinline')}</div></div>`;
+}
+function renderPreview(seg,r){
+  const a=AUTOS[seg.auto], i=S.prevTpl||0, m=a.mails[i], L=live(seg), pos=Math.max(0,L.findIndex(x=>x.i===i));
+  const people=r.people.slice().sort((x,y)=>y.last.date-x.last.date);
+  if(!people.length) return `<div class="overlay" data-a="closebg"><div class="modal"><p>No one is in this list right now, so there’s no one to preview with.</p><div class="mfoot"><span class="spacer"></span><button class="btn" data-a="closeprev">Back</button></div></div></div>`;
+  const k=((S.prevIdx||0)%people.length+people.length)%people.length, x=people[k];
+  const g=matchingGift(x,seg).filter(g=>!S.cond.campaign||g.campaign===S.cond.campaign).slice(-1)[0]||x.last;
+  const month=g.date.toLocaleString('en-US',{month:'long',year:'numeric'});
+  const first=x.name.split(' ')[0], ok=S.custom[ek(seg,i)], c=S.content[ek(seg,i)]||{};
+  const gapb=(t)=>`<div class="gap">${t}</div>`;
+  return `<div class="overlay" data-a="closebg"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="pt">
+    <button class="btn link back" data-a="closeprev">‹ Back</button>
+    <div class="mh2"><div><h4 id="pt">Preview: ${esc(m[1])}</h4><p>Email ${pos+1} of ${L.length} · ${m[0]} · Email template: ${esc(m[2])}</p></div><span class="spacer"></span><button class="rm" data-a="close" aria-label="Close">✕</button></div>
+    <div class="pvbar"><span>Previewing as <b>${esc(x.name)}</b> (${k+1} of ${people.length})${pin('prev')}</span><span class="spacer"></span><button class="btn" data-a="prevp" aria-label="Previous supporter">‹</button><button class="btn" data-a="nextp" aria-label="Next supporter">›</button></div>
+    ${ok?'':`<div class="pvwarn">${Object.keys(c).length?'This email is partly customized.':'This email still needs your story and details.'} The gaps below show what to add. <button class="btn link" data-a="customize" data-v="${i}">Customize now</button></div>`}
+    <div class="inbox">
+      <div class="ihead"><div><span class="muted">From</span> ${S.sender?`${esc(S.sname)} &lt;${esc(S.semail)}&gt;`:'<span class="gapi">Your sender name and address</span>'}</div><div><span class="muted">To</span> ${esc(x.name)} &lt;${x.email}&gt;</div><div><span class="muted">Subject</span> <b>${esc(m[1])}</b></div></div>
+      <div class="email pv">
+        ${c.logo?`<div class="pvlogo">${LOGO}</div>`:gapb('Your logo')}
+        <p>Hi ${esc(first)},</p>
+        <p>Your ${money(g.amount)} gift to ${esc(g.campaign)} in ${month} made a real difference.</p>
+        ${c.story?`<p>${esc(c.story).replace(/\n/g,'<br>')}</p>`:gapb('Your short story about what a gift like this made possible')}
+        ${c.photo?PHOTO:(ok?'':gapb('A photo of your work (optional)'))}
+        <p>Thank you for being part of this.</p>
+        <div class="edcta">Give again</div>${c.link?`<small class="pvlink">Links to ${esc(c.link)}</small>`:(ok?'':`<small class="phs">The button needs a link to your donation form</small>`)}
+        ${c.signoff?`<p>${esc(c.signoff)}</p>`:gapb('Your name and role')}
+      </div>
+    </div>
+    <div class="mfoot">${S.prevFrom==='editor'?`<button class="btn" data-a="sendtest">Send a test email</button><span class="spacer"></span><button class="btn primary" data-a="closeprev">Back to editing</button>`:`<button class="btn" data-a="prevtpl" ${pos===0?'disabled':''}>‹ Previous email</button><button class="btn" data-a="sendtest">Send a test email</button><span class="spacer"></span><button class="btn" data-a="nexttpl" ${pos===L.length-1?'disabled':''}>Next email ›</button>`}</div>
+  </div></div>`;
+}
+function renderEditor(seg,r){
+  const a=AUTOS[seg.auto], i=S.editTpl||0, m=a.mails[i], d=S.draft, L=live(seg), pos=Math.max(0,L.findIndex(x=>x.i===i));
+  const otherLogo = Object.entries(S.content).some(([k,c])=>k!==ek(seg,i)&&c.logo);
+  const slot=(on,filled,empty)=>on?filled:empty;
+  return `<div class="main em">
+    <div class="titlebar"><h3>Email Marketing</h3></div>
+    <div class="emtabs">${['Campaigns','Templates','Images','Stats','Automations','Insights'].map(t=>`<span class="${t==='Templates'?'on':''}">${t}</span>`).join('')}</div>
+    <div class="ctxbar"><span>Customizing email ${pos+1} of ${L.length} for <b>${esc(a.name)}</b>: “${esc(m[1])}”. Fill in each highlighted part, then save.</span><span class="spacer"></span><button class="btn primary" data-a="donecustom">Save and back to automation</button>${pin('eback')}</div>
+    <div class="mjframe">
+      <div class="edhead"><button class="edlink" data-a="edback">← Back to my templates</button><span class="spacer"></span><button class="edbtn" data-a="edpreview">Preview &amp; Test</button><button class="edbtn blue" data-a="edsave">${S.savedFlash?'Saved ✓':'Save'}</button></div>
+      <div class="edbody">
+        <div class="edside">${['Text','Button','Image','Divider','Spacer','Social'].map(x=>`<div>${x}</div>`).join('')}</div>
+        <div class="edcanvas"><div class="email">
+          ${slot(d.logo,`<div class="filled">${LOGO}<button class="btn link" data-a="dset" data-f="logo" data-v="false">Remove</button></div>`,
+            `<div class="eph">✏️ Add your logo<div class="ephb"><button class="btn" data-a="dset" data-f="logo" data-v="true">Upload logo</button>${otherLogo?`<button class="btn link" data-a="dset" data-f="logo" data-v="true">Use the logo from your other email</button>`:''}</div></div>`)}${pin('eph')}
+          <h4>${esc(m[1])}</h4>
+          <p>Hi [[data:firstname:"friend"]],${pin('evar')}</p>
+          <textarea class="edin" data-f="story" rows="3" placeholder="✏️ Tell one short, specific story about what a gift like theirs made possible.">${esc(d.story||'')}</textarea>
+          ${slot(d.photo,`<div class="filled">${PHOTO}<button class="btn link" data-a="dset" data-f="photo" data-v="false">Remove</button></div>`,
+            `<div class="eph">✏️ Add a photo of your work (optional)<div class="ephb"><button class="btn" data-a="dset" data-f="photo" data-v="true">Add photo</button></div></div>`)}
+          <p>Thank you for being part of this.</p>
+          <div class="edcta">Give again</div>
+          <input class="edin" data-f="link" value="${esc(d.link||'')}" placeholder="✏️ Link this button to your donation form, e.g. donorbox.org/your-form">
+          <input class="edin" data-f="signoff" value="${esc(d.signoff||'')}" placeholder="✏️ Sign off with a real name and role">
+        </div></div>
+      </div>
+    </div>
+  </div>`;
+}
+function unsubs(r){return r.people.filter(x=>!x.subscribed).length}
+function renderEmail(seg,r){
+  return `<div class="overlay" data-a="closebg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="et">
+    <div class="mh2"><div><h4 id="et">Send an email to ${r.people.length-unsubs(r)} supporter${r.people.length-unsubs(r)===1?'':'s'}</h4><p>${esc(seg.name)}: ${esc(plainWho(seg))}</p></div><span class="spacer"></span><button class="rm" data-a="close" aria-label="Close">✕</button></div>
+    ${unsubs(r)?`<div class="who">${unsubs(r)} of the ${r.people.length} people in this list unsubscribed from emails, so they won’t get this one.</div>`:''}
+    <div class="sect"><h5>Start from an email template</h5>${TEMPLATES.map(t=>`<div class="mail"><span><span class="s">${esc(t)}</span><small>Donorbox template for nonprofits</small></span><span class="spacer"></span><button class="btn link" data-a="noop" data-v="Opens “${esc(t)}” in the email editor">Use this</button></div>`).join('')}</div>
+    <div class="mfoot"><span class="spacer"></span><button class="btn" data-a="close">Cancel</button></div>
+  </div></div>`;
+}
+function renderDefs(){
+  return `<section class="defs">
+    <div><h2>Four things, four names</h2><p class="lead">Each has one name, used the same way everywhere in the product. There are two kinds of template: an automation template for the steps, and an email template for each email in it.</p></div>
+    <div class="terms">
+      ${[['Segment','Who','A group of supporters defined by rules. Donorbox suggests segments; users can change the numbers or save their own.','Lapsing donors: last gift 6 to 12 months ago'],
+         ['Email template','What they read','The content of one email, written for nonprofits. Each email step in an automation uses one. Edited in the email editor under Email Marketing.','“We miss you: here’s what your gift made possible”'],
+         ['Automation template','What happens over time','The steps: who starts it, the emails, the waits between them, and when it stops. Donorbox provides ready-made ones; users turn them on or adjust them in Email Marketing › Automations.','3 emails over 30 days to lapsing donors, stops when they give'],
+         ['Campaign','Where the gift came from','The existing Donorbox fundraising campaign and its forms. Shown on a gift as its source.','Feed the Community']]
+        .map(t=>`<div class="term"><h3>${t[0]}</h3><div class="q">${t[1]}</div><p>${t[2]}</p><div class="ex">Example: ${t[3]}</div></div>`).join('')}
+    </div>
+    <div><h2>The four buckets</h2><p class="lead">Every suggested segment sits in exactly one bucket. Numbers shown are defaults the user can change.</p></div>
+    <div class="buckets-def">
+      ${BUCKETS.map(b=>`<div class="bd"><h3>${esc(b.name)}</h3><p>${{new:'The first interaction. Relationship building starts here.',rec:'People with a recurring plan on any schedule, and what is happening to it.',lapse:'People who have gone quiet, and those who came back.',up:'A ladder: each person’s next step is to give again, give regularly, or give more.'}[b.id]}</p>
+        <ul>${b.segs.map(s=>`<li>${esc(s.name)} <span>(${esc(s.short(s.defaults))})</span></li>`).join('')}</ul></div>`).join('')}
+    </div>
+    <div class="open"><h3>Open questions</h3><ul>
+      <li>“Recent donors” (any gift in the last 30 days) doesn’t fit a bucket. Left out here; it could stay a plain date filter.</li>
+      <li>Major donors sit in Upgrades as the top tier. They’re usually managed one-on-one, so they may belong outside the buckets.</li>
+      <li>“Last year” and “this year” use the calendar year in this prototype. In the product they should follow the org’s fiscal year, set once in settings.</li>
+      <li>Should the result count in the cards be calculated live, or only when the user picks a segment? This prototype only calculates after a pick.</li>
+    </ul></div>
+  </section>`;
+}
+
+// ---------- Actions ----------
+let toastTimer=null;
+function toast(msg){S.toast=msg;render();clearTimeout(toastTimer);toastTimer=setTimeout(()=>{S.toast=null;render()},2200)}
+function pick(id){S.adv=false;S.seg=id;S.params={...SEG[id].defaults};S.openBucket=null;S.pop=null;S.narrowMenu=false;S.cond={};S.joinTop='and';S.joinGift='and';S.modal=null}
+function goto(n){
+  const notes=S.notes; S=fresh(); S.notes=notes;
+  if(n===2){S.openBucket='lapse'}
+  if(n>=3){pick('lapsing')}
+  if(n===4){S.params.from=3;S.pop='from'}
+  if(n>=5){S.cond.campaign='Feed the Community'}
+  if(n===6){S.modal='save'}
+  if(n===7){S.modal='autochoose'}
+  if(n===8){S.modal='automate'}
+  if(n===9){S.modal='build'}
+  if(n===10){S.view='builder';S.bmode='own'}
+  if(n===11){S.view='builder';S.bmode='ready'}
+  if(n===12){S.view='editor';S.editTpl=0;S.draft={}}
+  if(n===13){S.modal='domain';S.dstep='start';S.dname='';S.sname='';S.semail=''}
+}
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]');
+  const inMenu=e.target.closest('.menu,.vmenu,.nmenu,.bucket,.val,.narrow');
+  if(!el){ if(!inMenu && (S.openBucket||S.pop||S.narrowMenu)){S.openBucket=null;S.pop=null;S.narrowMenu=false;render()} return; }
+  const a=el.dataset.a, v=el.dataset.v;
+  if(a==='closebg' && e.target!==el) return;
+  e.stopPropagation();
+  switch(a){
+    case 'tab': S.tab=v; break;
+    case 'goto': goto(+v); break;
+    case 'notes': S.notes=!S.notes; break;
+    case 'bucket': S.openBucket = S.openBucket===v?null:v; S.pop=null; S.narrowMenu=false; break;
+    case 'clear': S.seg=null;S.params={};S.cond={};S.joinTop='and';S.joinGift='and';S.adv=false;S.openBucket=null;S.pop=null; break;
+    case 'pick': pick(v); break;
+    case 'pop': S.pop = S.pop===v?null:v; S.narrowMenu=false; S.openBucket=null; break;
+    case 'set': {
+      const k=el.dataset.k, val=+v; S.params[k]=val;
+      if(k==='from'&&S.params.to<=val){const o=OPT.months.find(o=>o.v>val);if(o)S.params.to=o.v}
+      if(k==='to'&&S.params.from>=val){const o=[...OPT.months].reverse().find(o=>o.v<val);if(o)S.params.from=o.v}
+      if(k==='min'&&S.params.max!==undefined&&S.params.max<=val){const o=OPT.money.find(o=>o.v>val);if(o)S.params.max=o.v}
+      if(k==='max'&&S.params.min>=val){const o=[...OPT.money].reverse().find(o=>o.v<val);if(o)S.params.min=o.v}
+      S.pop=null; break; }
+    case 'reset': S.params={...SEG[S.seg].defaults}; S.joinTop='and'; S.joinGift='and'; S.pop=null; break;
+    case 'join': if(v==='top') S.joinTop=S.joinTop==='and'?'or':'and'; else S.joinGift=S.joinGift==='and'?'or':'and'; S.pop=null; break;
+    case 'nmenu': S.narrowMenu=!S.narrowMenu; S.pop=null; break;
+    case 'addc': S.cond[v]=COND[v].def; S.narrowMenu=false; S.pop='c:'+v; break;
+    case 'cset': { const c=COND[el.dataset.c]; const o=condOpts(c).find(o=>String(o.v)===v); S.cond[c.id]=o?o.v:v; S.pop=null; break; }
+    case 'ucond': delete S.cond[v]; S.pop=null; break;
+    case 'automate': S.modal='autochoose'; S.enroll='new'; break;
+    case 'pickready': S.modal='automate'; break;
+    case 'pickbuild': S.modal='build'; break;
+    case 'back': S.modal='autochoose'; break;
+    case 'save': S.modal='save'; break;
+    case 'dosave': S.modal=null; render(); toast('Saved to Lists as a dynamic list'); return;
+    case 'openbuilder': S.modal=null; S.view='builder'; S.bmode='own'; break;
+    case 'adjust': S.modal=null; S.view='builder'; S.bmode='ready'; break;
+    case 'backsup': S.view=null; break;
+    case 'email': S.modal='email'; break;
+    case 'enroll': S.enroll=v; break;
+    case 'close': case 'closebg': S.modal=null; break;
+    case 'turnon': { const sg=SEG[S.seg], a=AUTOS[sg.auto]; if(!(live(sg).every(({i})=>S.custom[ek(sg,i)])&&S.sender)) return; S.modal=null; render(); toast('Automation turned on'); return; }
+    case 'rmmail': { const sg=SEG[S.seg]; if(live(sg).length>1){ S.removed[ek(sg,+v)]=true; render(); toast('Email removed. You can add it back below.'); return; } break; }
+    case 'addmail': delete S.removed[ek(SEG[S.seg],+v)]; break;
+    case 'preview': S.modal='preview'; S.prevTpl=+v; S.prevIdx=0; break;
+    case 'closeprev': S.modal = S.prevFrom==='editor' ? null : 'automate'; S.prevFrom=null; break;
+    case 'prevp': S.prevIdx=(S.prevIdx||0)-1; break;
+    case 'nextp': S.prevIdx=(S.prevIdx||0)+1; break;
+    case 'prevtpl': { const L=live(SEG[S.seg]), p=L.findIndex(x=>x.i===(S.prevTpl||0)); if(p>0) S.prevTpl=L[p-1].i; break; }
+    case 'nexttpl': { const L=live(SEG[S.seg]), p=L.findIndex(x=>x.i===(S.prevTpl||0)); if(p<L.length-1) S.prevTpl=L[p+1].i; break; }
+    case 'customize': S.savedFlash=false; S.prevFrom=null; S.draft={...(S.content[ek(SEG[S.seg],+v)]||{})}; S.modal=null; S.view='editor'; S.editTpl=+v; break;
+    case 'donecustom': saveDraft(); S.savedFlash=false; S.view=null; S.modal='automate'; break;
+    case 'edsave': saveDraft(); S.savedFlash=true; render(); toast('Email saved'); return;
+    case 'edpreview': saveDraft(); S.modal='preview'; S.prevTpl=S.editTpl||0; S.prevIdx=0; S.prevFrom='editor'; break;
+    case 'edback': S.savedFlash=false; S.view=null; S.modal='automate'; break;
+    case 'sendtest': toast('Test email sent to your inbox'); return;
+    case 'dset': S.draft[el.dataset.f]=v==='true'?true:v==='false'?false:v; break;
+    case 'setdomain': S.modal='domain'; S.dstep='start'; S.derr=''; break;
+    case 'dfind': {
+      const nm=(document.querySelector('[data-f=sname]')||{}).value||S.sname, em=((document.querySelector('[data-f=semail]')||{}).value||S.semail).trim();
+      S.sname=nm.trim(); S.semail=em;
+      if(!S.sname){ S.derr='Add the name supporters should see.'; break; }
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ S.derr='Enter a full email address, like hello@yourorganization.org'; break; }
+      S.derr=''; S.dname=em.split('@')[1].toLowerCase();
+      if(['gmail.com','yahoo.com','hotmail.com','outlook.com','icloud.com','aol.com','live.com'].includes(S.dname)){ S.dstep='free'; break; }
+      if(S.verified.includes(S.dname)){ S.already=true; S.dstep='done'; break; }
+      S.already=false; S.dstep='provider'; break; }
+    case 'dstart': S.dstep='start'; break;
+    case 'usesender': { const x=S.senders[+v]; S.sname=x.name; S.semail=x.email; S.dname=x.email.split('@')[1]; S.already=true; S.dstep='done'; break; }
+    case 'dconnect': S.dstep='connecting'; render(); setTimeout(()=>{ if(S.modal==='domain'&&S.dstep==='connecting'){ S.dstep='done'; render(); } },1400); return;
+    case 'dmanual': S.dstep='manual'; break;
+    case 'dcheck': S.dstep='connecting'; render(); setTimeout(()=>{ if(S.modal==='domain'&&S.dstep==='connecting'){ S.dstep='done'; render(); } },1400); return;
+    case 'dback': S.dstep='provider'; break;
+    case 'closedom': S.modal='automate'; break;
+    case 'ddone': S.sender=true; S.domain=true; if(!S.verified.includes(S.dname)) S.verified.push(S.dname); if(!S.senders.some(x=>x.email===S.semail)) S.senders.push({name:S.sname,email:S.semail}); S.modal='automate'; break;
+    case 'copy': toast('Copied'); return;
+    case 'adv': S.adv=true; S.pop=null; S.narrowMenu=false; break;
+    case 'advback': S.adv=false; S.pop=null; break;
+    case 'advapply': S.adv=false; S.pop=null; render(); toast('Advanced filter applied'); return;
+    case 'noop': toast(v||'Not part of this prototype'); return;
+  }
+  render();
+});
+document.addEventListener('input',e=>{ const f=e.target.dataset&&e.target.dataset.f; if(f==='sname'||f==='semail'){ S[f]=e.target.value; return; } if(f){ S.draft[f]=e.target.value; if(S.savedFlash){ S.savedFlash=false; const b=document.querySelector('[data-a=edsave]'); if(b) b.textContent='Save'; } } });
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ if(S.modal){S.modal=null} else {S.openBucket=null;S.pop=null;S.narrowMenu=false} render(); }
+  if((e.key==='Enter'||e.key===' ') && e.target.matches('[role="button"][data-a]')){e.preventDefault();e.target.click()}
+});
+render();
+})();
+</script>
+</body>
+</html>
