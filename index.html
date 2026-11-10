@@ -99,6 +99,12 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outl
 .reach{display:flex;flex-wrap:wrap;align-items:center;gap:8px;position:relative}
 .reach .label{font-weight:600;margin-right:4px}
 .bucket{position:relative}
+.groupby{margin-left:auto;display:inline-flex;align-items:center;gap:2px;font-size:13px;color:var(--muted)}
+.groupby .gl{margin-right:6px}
+.groupby button{border:1px solid var(--line-2);background:var(--surface);padding:5px 10px;font:inherit;color:var(--ink,inherit);cursor:pointer}
+.groupby button:first-of-type{border-radius:999px 0 0 999px}
+.groupby button:last-of-type{border-radius:0 999px 999px 0;margin-left:-1px}
+.groupby button[aria-pressed="true"]{background:var(--blue-soft);border-color:var(--blue);color:var(--blue);font-weight:600;position:relative}
 .bbtn{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600}
 .bbtn .chev{color:var(--muted);font-size:11px;transition:transform .15s}
 .bbtn[aria-expanded="true"]{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
@@ -161,6 +167,37 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outl
 .arow.grp .agroup{flex:1}
 .seggroup{border-style:solid;border-color:var(--line)}
 .seggroup .ag-h{color:var(--ink-2)}
+.segblock .ag-h{display:flex;align-items:center;gap:6px}
+.segblock .ag-h .spacer{flex:1}
+.samegift{font-size:13px;color:var(--ink-2);background:var(--surface-2);border-left:3px solid var(--blue);border-radius:6px;padding:8px 12px;line-height:1.45}
+.optsw{display:inline-flex;align-items:center;gap:2px;font-size:13px;color:var(--muted);margin-right:12px}
+.optsw span{margin-right:6px}
+.optsw button{border:1px solid var(--line-2);background:var(--surface);padding:6px 12px;font:inherit;color:var(--ink);cursor:pointer}
+.optsw button:first-of-type{border-radius:8px 0 0 8px}
+.optsw button:last-of-type{border-radius:0 8px 8px 0;margin-left:-1px}
+.optsw button[aria-pressed="true"]{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-ink);font-weight:600;position:relative}
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.frow .spacer{flex:1}
+.pchip,.fchip{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;border-radius:10px;padding:4px 6px 4px 12px;font-size:14px;position:relative}
+.pchip{background:var(--blue-soft);border:1px solid var(--blue)}
+.pchip .pk{font-weight:700;color:var(--blue-ink);margin-right:2px}
+.fchip{background:var(--surface);border:1px solid var(--line-2)}
+.fchip .fk{font-weight:600}
+.readback{font-size:14px;line-height:1.5;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:8px 12px}
+.readback .loose{display:block;margin-top:2px;color:var(--ink);font-weight:600}
+.negbtn{font-weight:600}
+.negbtn[aria-pressed="true"]{background:var(--surface);border-color:var(--ink-2);color:var(--ink)}
+.narrow.inrules{border-top:1px dashed var(--line-2);padding-top:8px;margin-top:2px}
+.val.num{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--blue);border-radius:6px;padding:2px 6px;background:var(--surface)}
+.val.num .cur{color:var(--blue-ink);font-weight:600}
+.numin{width:72px;border:0;background:transparent;font:inherit;font-weight:600;color:var(--blue-ink);padding:2px 0}
+.numin:focus{outline:none}
+.val.num:focus-within{box-shadow:0 0 0 3px var(--blue-soft)}
+.xgroup{border-left-color:var(--ink-2)}
+.ggroup{display:flex;flex-direction:column;gap:6px;border-left:3px solid var(--blue-line);padding-left:10px}
+.gsub{padding-left:14px}
+.gsub.muted{color:var(--muted);font-size:13px}
+.scope{font-size:13px;color:var(--ink-2);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .ornote{font-size:13px;color:var(--ink-2);background:var(--blue-soft);border-radius:8px;padding:6px 10px}
 .agroup{border:1px dashed var(--blue-line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
 .ag-h{font-size:12.5px;font-weight:600;color:var(--blue-ink)}
@@ -388,7 +425,7 @@ const RAW = [
  ['Ethan Moore',true,'failed',3,[['2026-07-05',40,'School Lunch Fund'],['2026-08-05',40,'School Lunch Fund'],['2026-09-05',40,'School Lunch Fund']]],
  ['Zoe Martin',true,null,0,[['2025-11-25',60,'Giving Tuesday'],['2026-06-14',120,'Feed the Community'],['2026-09-30',180,'Feed the Community']]],
  ['Hannah Lee',true,null,0,[['2025-06-01',80,'Feed the Community'],['2026-06-20',80,'Spring Appeal']]],
- ['Victor Alvarez',true,null,0,[['2022-05-05',3000,'Winter Coat Drive'],['2024-11-11',4000,'Winter Coat Drive'],['2026-10-01',5000,'Winter Coat Drive']]]
+ ['Victor Alvarez',true,null,0,[['2022-05-05',3000,'Winter Coat Drive'],['2024-11-11',4000,'Winter Coat Drive'],['2026-10-01',12000,'Winter Coat Drive']]]
 ];
 const PEOPLE = RAW.map((r,i)=>{
   const gifts = r[4].map(g=>({date:new Date(g[0]+'T12:00:00'),amount:g[1],campaign:g[2]})).sort((a,b)=>a.date-b.date);
@@ -406,15 +443,31 @@ PEOPLE.forEach(x=>{
 });
 const CAMPAIGNS = ['Feed the Community','Spring Appeal','Giving Tuesday','Winter Coat Drive','School Lunch Fund','Sustainers Fund'];
 const ago = d => (TODAY-d);
+// Gift kind, as Donorbox records it: recurring payment; one-time = a first gift; repeated = any later non-recurring gift.
+PEOPLE.forEach(x=>{let seen=false; x.gifts.forEach(g=>{g.kind=g.recurring?'recurring':seen?'repeated':'one-time'; seen=true;})});
+const okK=(g,k)=>!k||k==='any'||(k==='extra'?!g.recurring:g.kind===k), ofK=(x,k)=>x.gifts.filter(g=>okK(g,k)), lastK=(x,k)=>ofK(x,k).slice(-1)[0], firstK=(x,k)=>ofK(x,k)[0];
+const sumK=(x,k,per)=>ofK(x,k).filter(g=>per==='life'||ago(g.date)<=per*DAY).reduce((t,g)=>t+g.amount,0);
+const annualK=(x,k)=>ofK(x,k).filter(g=>ago(g.date)<=365*DAY).reduce((t,g)=>t+g.amount,0);
+const SINCE=k=>!k||k==='any'?'nothing at all since':'no '+KP[k]+' since';
+const KL={extra:'extra gift (one-time or repeated)',any:'gift of any kind','one-time':'one-time gift',repeated:'repeated gift',recurring:'recurring payment'}, KP={extra:'extra gifts (one-time or repeated)',any:'all gifts','one-time':'one-time gifts',repeated:'repeated gifts',recurring:'recurring payments'};
+const CTRY={'Priya Shah':['Canada','ON'],'Daniel Kim':['Australia','NSW'],'Lena Ortiz':['United Kingdom','England'],'Hannah Lee':['Canada','BC']};
+// Sample payment methods: recurring payments by card; other gifts vary, including cash, check and DAF.
+const MCYCLE=['Card','PayPal','Check','Bank transfer','Card','Donor-advised fund (DAF)','Cash','Apple Pay / Google Pay','Stock'], RCYCLE=['Card','Bank transfer','PayPal','Card'];
+PEOPLE.forEach((x,i)=>x.gifts.forEach((g,j)=>{g.method = g.recurring?RCYCLE[i%RCYCLE.length]:MCYCLE[(i*3+j)%MCYCLE.length];}));
+PEOPLE.forEach(x=>{const c=CTRY[x.name]; x.country=c?c[0]:'United States'; if(c) x.state=c[1];});
+PEOPLE.forEach(x=>x.gifts.forEach(g=>{g.x=x}));
+PEOPLE.forEach(x=>{x.annual = x.gifts.filter(g=>ago(g.date)<=365*DAY).reduce((t,g)=>t+g.amount,0)}); // giving in the last 12 months, rolling
 const money = n => '$'+Math.round(n).toLocaleString('en-US');
 const fdate = d => String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')+'/'+d.getFullYear();
 const yearOf = d => d.getFullYear();
 const THIS_YEAR = 2026, LAST_YEAR = 2025;
 
 // ---------- Parameter option sets ----------
+const WINDOWS=[7,14,30,60,90,183,365], winL=v=>v===183?'6 months':v===365?'12 months':v+' days';
 const OPT = {
-  days:[7,14,30,60,90].map(v=>({v,l:v+' days'})),
-  cdays:[30,60,90,180].map(v=>({v,l:v+' days'})),
+  // One time scale everywhere, so a window picked in a segment's rule and in “When” always offers the same choices.
+  days:WINDOWS.map(v=>({v,l:winL(v)})),
+  cdays:WINDOWS.map(v=>({v,l:winL(v)})),
   months:[1,2,3,6,9,12,18,24,36].map(v=>({v,l:v+(v===1?' month':' months')})),
   count:[2,3,5,10].map(v=>({v,l:String(v)})),
   money:[500,1000,2500,5000,9999,10000,25000].map(v=>({v,l:money(v)})),
@@ -424,7 +477,18 @@ const OPT = {
   sched:['Weekly','Monthly','Quarterly','Yearly'].map(v=>({v,l:v})),
   plan:[{v:'none',l:'no active plan'},{v:'has',l:'has an active plan'}],
   state:['CA','IL','NY','PA','TX'].map(v=>({v,l:v})),
-  when:[['in30','in the last 30 days'],['in90','in the last 90 days'],['in183','in the last 6 months'],['in365','in the last 12 months'],['over30','more than 30 days ago'],['over90','more than 90 days ago'],['over183','more than 6 months ago'],['over365','more than 12 months ago']].map(a=>({v:a[0],l:a[1]})),
+  period:[{v:'life',l:'all time'},{v:365,l:'in the last 12 months'},{v:183,l:'in the last 6 months'},{v:90,l:'in the last 90 days'},{v:30,l:'in the last 30 days'}],
+  method:['Card','Apple Pay / Google Pay','Bank transfer','PayPal','Cash','Check','Donor-advised fund (DAF)','Stock','Crypto'].map(v=>({v,l:v})),
+  methodrec:['Card','Apple Pay / Google Pay','Bank transfer','PayPal'].map(v=>({v,l:v})),
+  country:['United States','Canada','United Kingdom','Australia'].map(v=>({v,l:v})),
+  basis:[{v:'pay',l:'per payment (their plan)'},{v:'life',l:'in total, all time'},{v:365,l:'in total, last 12 months'},{v:183,l:'in total, last 6 months'},{v:90,l:'in total, last 90 days'},{v:30,l:'in total, last 30 days'}],
+  which:[{v:'first',l:'Their first'},{v:'last',l:'Their last'},{v:'any',l:'Any of their'},{v:'none',l:'None of their'}],
+  when:[{v:'ever',l:'at any time'},...WINDOWS.map(v=>({v:'in'+v,l:'in the last '+winL(v)})),...WINDOWS.map(v=>({v:'over'+v,l:'more than '+winL(v)+' ago'})),{v:'afterrec',l:'after their last recurring payment'}],
+  email:[{v:'no',l:'not subscribed'},{v:'yes',l:'subscribed'}],
+  // One list of gift kinds everywhere.
+  gkind:['any','one-time','repeated','recurring'].map(v=>({v,l:KL[v]})),
+  xkind:['any','extra','one-time','repeated','recurring'].map(v=>({v,l:KL[v]})),
+  gkindpl:['any','one-time','repeated','recurring'].map(v=>({v,l:KP[v]})),
   camp:null
 };
 
@@ -433,111 +497,168 @@ const OPT = {
 // level 'person': applies to the supporter.
 // when(seg): only offer conditions that make sense for this segment and don't repeat its own rule.
 const notRec = seg => seg.bucket.id!=='rec';
-const gl = (seg,rest) => (seg.giftLabel?seg.giftLabel+' ':seg.ruleOnGift?'That gift ':'Last gift ')+rest;          // "That gift was…" vs "Last gift was…"
-const dn = seg => seg.giftName?seg.giftName:seg.ruleOnGift?'that same donation':'their most recent donation';
+const gl = (seg,rest) => (seg.giftLabel?seg.giftLabel+' ':'That gift ')+rest; // the scope line above names the gift          // "That gift was…" vs "Last gift was…"
+const canWhich = seg => !seg.ruleOnGift && !seg.giftName;
+const whichNow = () => { const seg=S.seg&&SEG[S.seg]; if(!seg) return 'any'; return (canWhich(seg)&&S.which)||seg.giftKey||'any'; };
+const countOn = () => false; // counting lives in “Number of gifts”, a filter about the person
+const giftNotOn = () => !!S.seg && canWhich(SEG[S.seg]) && whichNow()==='none';
+const basisNow = () => S.basis || (S.seg && SEG[S.seg].bucket.id==='rec' ? 'pay' : 'life');
+const kindNow = () => S.cond.gtype!==undefined?S.cond.gtype:(S.params.kind||'any');
+const giftWord = seg => { if(seg.giftName) return seg.giftName; const w=whichNow(); return w==='first'?'their first '+KL[kindNow()]:w==='last'?'their last '+KL[kindNow()]:'one of their '+KP[kindNow()]; };
+const dn = seg => giftNotOn()?'the gift':seg.giftKey?giftWord(seg):'one of their donations';
 const CONDS = [
  {id:'campaign',level:'gift',name:'Campaign',desc:'Where the gift came from',opt:'camp',def:'Feed the Community',
   label:seg=>seg.giftKey?gl(seg,'came through:'):'Gave through:',adv:seg=>[seg.giftKey?'Campaign of '+dn(seg):'Campaign',seg.giftKey?'is':'any donation is'],
   when:()=>true,gift:(g,v)=>g.campaign===v},
+ {id:'method',level:'gift',name:'Payment method',desc:'Card, bank, PayPal, cash, check, DAF, stock…',opt:'method',def:'Check',
+  label:()=>'Paid by:',adv:()=>['Payment method','is'],
+  when:()=>true,gift:(g,v)=>g.method===v},
  {id:'gamt',level:'gift',name:'Gift amount',desc:'Leave out small gifts',opt:'gamt',def:100,
   label:seg=>seg.giftKey?gl(seg,'was at least:'):'Has a gift of at least:',adv:seg=>[seg.giftKey?'Amount of '+dn(seg):'Donation amount',seg.giftKey?'is at least':'any donation is at least'],
   when:()=>true,gift:(g,v)=>g.amount>=v},
  {id:'lastwhen',level:'gift',name:'When',desc:'How long ago the gift was made',opt:'when',def:'in90',
   label:seg=>seg.giftKey?gl(seg,'was made:'):'Has a gift made:',adv:seg=>[seg.giftKey?'Date of '+dn(seg):'Donation date',seg.giftKey?'is':'any donation is'],
   // Offered wherever the segment's own rule isn't already about dates (recurring and upgrades).
-  when:seg=>seg.bucket.id==='rec'||seg.bucket.id==='up',gift:(g,v)=>{const d=ago(g.date)/DAY;return v.startsWith('in')?d<=+v.slice(2):d>+v.slice(4)}},
- {id:'gtype',level:'gift',name:'One-time or recurring',desc:'What kind of gift it was',opt:'gtype',def:'one-time',
-  label:seg=>seg.giftKey?gl(seg,'was:'):'Has given:',suffix:seg=>seg.giftKey?'':'gifts',adv:seg=>[seg.giftKey?'Type of '+dn(seg):'Donation type',seg.giftKey?'is':'any donation is'],
-  when:seg=>notRec(seg)&&seg.bucket.id!=='up',gift:(g,v)=>(v==='recurring')===!!g.recurring},
+  when:()=>true,gift:(g,v)=>{ if(v==='ever') return true; if(v==='afterrec'){const r=lastK(g.x,'recurring');return !!r&&g.date>r.date;} const d=ago(g.date)/DAY;return v.startsWith('in')?d<=+v.slice(2):d>+v.slice(4)}},
+ {id:'gtype',level:'gift',name:'Gift type',desc:'Any, one-time, repeated or recurring payment',opt:'gkind',def:'repeated',
+  label:()=>'Gift type:',adv:seg=>['Donation type',seg.giftKey?'of that gift is':'of one of their donations is'],
+  when:seg=>!seg.giftName&&!seg.rule.some(t=>t[0]==='p'&&t[1]==='kind'),gift:(g,v)=>okK(g,v)},
  {id:'plan',level:'person',name:'Recurring plan',desc:'For example, leave out active recurring donors',opt:'plan',def:'none',
   label:()=>'Recurring plan:',adv:()=>['Recurring plan','is'],
   when:seg=>notRec(seg)&&!['couldrec','once','new'].includes(seg.id),person:(x,v)=>v==='has'?x.plan==='active':x.plan!=='active'},
- {id:'sched',level:'person',name:'Schedule',desc:'Weekly, monthly, quarterly or yearly',opt:'sched',def:'Monthly',
+ {id:'sched',level:'person',canNot:true,name:'Schedule',desc:'Weekly, monthly, quarterly or yearly',opt:'sched',def:'Monthly',
   label:()=>'Schedule:',adv:()=>['Recurring schedule','is'],
   when:seg=>seg.bucket.id==='rec',person:(x,v)=>x.schedule===v},
  {id:'ramt',level:'person',name:'Recurring amount',desc:'Amount of each recurring payment',opt:'ramt',def:25,
-  label:()=>'Recurring amount: at least',adv:()=>['Recurring amount','is at least'],
-  when:seg=>seg.bucket.id==='rec',person:(x,v)=>x.recAmount>=v},
+  label:()=>'Their plan: at least',suffix:()=>'per payment',adv:()=>['Recurring plan amount','is at least'],
+  when:()=>false,person:(x,v)=>x.recAmount>=v}, // folded into Giving amount
+ {id:'giving',level:'person',name:'Giving amount',desc:'Per payment, or in total over a period you choose',opt:'money',def:100,
+  label:()=>'Giving: at least',adv:()=>['Giving','is at least'],
+  when:seg=>!['mid','major','once'].includes(seg.id),person:(x,v)=>{const b=basisNow();return b==='pay'?x.recAmount>=v:b==='life'?x.lifetime>=v:x.gifts.filter(g=>ago(g.date)<=b*DAY).reduce((t,g)=>t+g.amount,0)>=v}},
  {id:'largest',level:'person',name:'Largest gift',desc:'Useful for choosing an ask amount',opt:'gamt',def:250,
   label:()=>'Largest gift: at least',adv:()=>['Largest donation','is at least'],
-  when:seg=>seg.bucket.id==='lapse',person:(x,v)=>x.largest>=v},
+  when:seg=>seg.bucket.id==='lapse'||seg.id==='major'||seg.id==='mid',person:(x,v)=>x.largest>=v},
  {id:'total',level:'person',name:'Total donated',desc:'Lifetime giving',opt:'money',def:1000,
   label:()=>'Total donated: at least',adv:()=>['Total donated','is at least'],
-  when:seg=>!['mid','major','new','once'].includes(seg.id),person:(x,v)=>x.lifetime>=v},
- {id:'count',level:'person',name:'Number of gifts',desc:'How many times they have given',opt:'count',def:3,
+  when:()=>false,person:(x,v)=>x.lifetime>=v}, // folded into Giving amount
+ {id:'count',level:'person',name:'Number of gifts',desc:'How many gifts, of any type or one type',opt:'count',def:3,
   label:()=>'Number of gifts: at least',adv:()=>['Number of donations','is at least'],
-  when:seg=>!['once','couldrec','new'].includes(seg.id),person:(x,v)=>x.gifts.length>=v},
- {id:'state',level:'person',name:'Location',desc:'State or region',opt:'state',def:'NY',
-  label:()=>'Location:',adv:()=>['State','is'],
+  when:seg=>!['once','couldrec','new'].includes(seg.id),person:(x,v)=>ofK(x,S.countKind||'any').length>=v},
+ {id:'email',level:'person',name:'Email marketing',desc:'Subscribed to email or not',opt:'email',def:'no',
+  label:()=>'Email marketing:',adv:()=>['Email marketing','is'],
+  when:()=>false,person:(x,v)=>v==='yes'?x.subscribed:!x.subscribed},
+ {id:'country',level:'person',canNot:true,name:'Country',desc:'For organizations with supporters abroad',opt:'country',def:'United States',
+  label:()=>'Country:',adv:()=>['Country','is'],
+  when:()=>true,person:(x,v)=>x.country===v},
+ {id:'state',level:'person',canNot:true,name:'State / province',desc:'Within a country',opt:'state',def:'NY',
+  label:()=>'State / province:',adv:()=>['State','is'],
   when:()=>true,person:(x,v)=>x.state===v}
 ];
 const COND = {}; CONDS.forEach(c=>COND[c.id]=c);
-const condOpts = c => c.opt==='camp' ? CAMPAIGNS.map(v=>({v,l:v})) : OPT[c.opt];
+// State / province options follow the chosen country (US states, Canadian provinces, UK nations, Australian states).
+const REGIONS = {'United States':['CA','IL','NY','PA','TX'],'Canada':['AB','BC','ON','QC'],'United Kingdom':['England','Scotland','Wales','Northern Ireland'],'Australia':['NSW','QLD','VIC','WA']};
+const regionOpts = () => { const c=S.cond.country; if(c!==undefined&&!S.neg.country) return REGIONS[c].map(v=>({v,l:v})); return Object.entries(REGIONS).flatMap(([k,vs])=>vs.map(v=>({v,l:v+' ('+(k==='United States'?'US':k==='United Kingdom'?'UK':k)+')'}))); };
+const kindOpts = plural => { const seg=S.seg&&SEG[S.seg], all=plural?OPT.gkindpl:OPT.gkind; return seg&&seg.kinds ? all.filter(o=>seg.kinds.includes(o.v)) : all; };
+const afterRecOk = kind => S.seg && SEG[S.seg].bucket.id==='rec' && kind!=='recurring';
+const condOpts = c => c.opt==='when' ? OPT.when.filter(o=>o.v!=='afterrec'||afterRecOk(kindNow())) : c.opt==='method' && kindNow()==='recurring' ? OPT.methodrec : c.opt==='gkind' ? kindOpts(false) : c.opt==='camp' ? CAMPAIGNS.map(v=>({v,l:v})) : c.opt==='state' ? regionOpts() : OPT[c.opt];
 const activeConds = () => CONDS.filter(c=>S.cond[c.id]!==undefined);
 
 // ---------- Segments, grouped in four buckets ----------
 // giftKey: which single gift the segment is about ('first' / 'last'), so narrowing applies to that same gift.
 const BUCKETS = [
  {id:'new',name:'New donors',ruleOnGift:true,segs:[
-   {id:'new',name:'New donors',short:p=>'First gift in the last '+p.days+' days',defaults:{days:30},giftKey:'first',
-    rule:[['k','First gift:'],['t','in the last'],['p','days','days']],
-    test:(x,p)=>ago(x.first.date)<=p.days*DAY,
+   {id:'new',name:'New donors',short:p=>'First '+KL[p.kind]+' in the last '+winL(p.days),defaults:{kind:'any',days:7},giftKey:'first',
+    rule:[['k','First'],['p','kind','gkind'],['t','in the last'],['p','days','days']],
+    test:(x,p)=>{const g=firstK(x,p.kind);return !!g&&ago(g.date)<=p.days*DAY},
     hint:'The first weeks after a first gift decide whether someone gives again. A quick thank-you matters most here.',auto:'welcome'}
  ]},
  {id:'rec',name:'Recurring donors',segs:[
-   {id:'active',name:'Active recurring',auto:'thankrec',giftKey:'last',short:()=>'Recurring plan is active, any schedule',defaults:{},
+   {id:'active',name:'Active recurring',auto:'thankrec',giftKey:'last',short:()=>'Recurring plan is active, any schedule',defaults:{kind:'any'},
     rule:[['k','Recurring plan:'],['t','active, any schedule']],test:x=>x.plan==='active',
     hint:'Your most loyal supporters. Thank them and show the impact of steady giving.'},
-   {id:'failed',name:'Payment failed',giftKey:'last',short:()=>'Last recurring payment failed',defaults:{},
+   {id:'newrec',name:'New recurring donors',auto:'thankrec',giftKey:'first',short:p=>'First recurring payment in the last '+winL(p.days),defaults:{days:30,kind:'recurring'},
+    rule:[['k','First recurring payment:'],['t','in the last'],['p','days','days']],
+    test:(x,p)=>{const g=firstK(x,'recurring');return !!g&&ago(g.date)<=p.days*DAY},
+    hint:'The first weeks of a new plan decide whether it lasts. Welcome them and show what steady giving makes possible.'},
+   {id:'bonus',name:'Recurring donors for an extra gift',auto:'extra',giftKey:'last',short:p=>'Active plan, no extra gift (one-time or repeated) in the last '+winL(p.days),defaults:{xk:'extra',days:90,kind:'any'},
+    rule:[['k','Recurring plan:'],['t','active, and no extra gift (one-time or repeated) in the last'],['p','days','days']],
+    test:(x,p)=>x.plan==='active'&&!x.gifts.some(g=>okK(g,p.xk)&&ago(g.date)<=p.days*DAY),
+    hint:'They already give on a schedule. An extra gift lets them do more without touching their plan.'},
+   {id:'failed',name:'Payment failed',giftKey:'last',short:()=>'Last recurring payment failed',defaults:{kind:'recurring'},
     rule:[['k','Recurring plan:'],['t','last payment failed']],test:x=>x.plan==='failed',
     hint:'Usually an expired card, not a decision to stop. Ask them to update their details quickly.',auto:'card'},
-   {id:'paused',name:'Paused',auto:'paused',giftKey:'last',short:()=>'Donor paused their recurring plan',defaults:{},
+   {id:'paused',name:'Paused',auto:'paused',giftKey:'last',short:()=>'Donor paused their recurring plan',defaults:{kind:'any'},
     rule:[['k','Recurring plan:'],['t','paused by the donor']],test:x=>x.plan==='paused',
     hint:'They chose to pause. A gentle check-in works better than an ask.'},
-   {id:'cancelled',name:'Cancelled',auto:'winrec',giftKey:'last',short:p=>'Cancelled in the last '+p.days+' days',defaults:{days:90},
+   {id:'cancelled',name:'Cancelled',auto:'winrec',giftKey:'last',short:p=>'Cancelled in the last '+winL(p.days),defaults:{days:90,kind:'any'},
     rule:[['k','Recurring plan:'],['t','cancelled in the last'],['p','days','cdays']],
     test:(x,p)=>x.plan==='cancelled'&&x.planDays<=p.days,
     hint:'Recently cancelled donors can often be won back with a lower amount or a different schedule.'}
  ]},
  {id:'lapse',name:'Lapsing and lapsed',segs:[
-   {id:'lapsing',name:'Lapsing donors',ruleOnGift:true,short:p=>'Last gift '+p.from+' to '+p.to+' months ago',defaults:{from:6,to:12},giftKey:'last',
-    rule:[['k','Last gift:'],['t','between'],['p','from','months'],['t','and'],['p','to','months'],['t','ago']],
-    test:(x,p)=>{const m=ago(x.last.date)/MONTH;return m>=p.from&&m<p.to},
+   {id:'lapsing',name:'Lapsing donors',ruleOnGift:true,short:p=>'Last '+KL[p.kind]+' '+p.from+' to '+p.to+' months ago, '+SINCE(p.kind),defaults:{kind:'any',from:6,to:12},giftKey:'last',
+    rule:[['k','Last'],['p','kind','gkind'],['t','between'],['p','from','months'],['t','and'],['p','to','months'],['t','ago, none of this kind since']],
+    test:(x,p)=>{const g=lastK(x,p.kind);if(!g)return false;const m=ago(g.date)/MONTH;return m>=p.from&&m<p.to},
     hint:'People in this window are the most likely to give again if you reach out now. After 12 months it gets much harder.',auto:'checkin'},
-   {id:'lapsed',name:'Lapsed donors',auto:'winback',ruleOnGift:true,short:p=>'Last gift over '+p.m+' months ago',defaults:{m:12},giftKey:'last',
-    rule:[['k','Last gift:'],['t','more than'],['p','m','months'],['t','ago']],
-    test:(x,p)=>ago(x.last.date)/MONTH>=p.m,
+   {id:'lapsed',name:'Lapsed donors',auto:'winback',ruleOnGift:true,short:p=>'Last '+KL[p.kind]+' over '+p.m+' months ago, '+SINCE(p.kind),defaults:{kind:'any',m:12},giftKey:'last',
+    rule:[['k','Last'],['p','kind','gkind'],['t','more than'],['p','m','months'],['t','ago, none of this kind since']],
+    test:(x,p)=>{const g=lastK(x,p.kind);return !!g&&ago(g.date)/MONTH>=p.m},
     hint:'Harder to win back. A heartfelt update about what has changed since they last gave works best.'},
-   {id:'lyb',name:'Gave last year, not this year',auto:'yearend',short:()=>'Gave last year, nothing yet this year',defaults:{},
-    rule:[['k','Gave:'],['t','last year, nothing so far this year']],
-    test:x=>x.gifts.some(g=>yearOf(g.date)===LAST_YEAR)&&!x.gifts.some(g=>yearOf(g.date)===THIS_YEAR),
+   {id:'lyb',name:'LYBUNT',auto:'yearend',short:p=>'Gave '+KP[p.kind]+' last year, none so far this year',defaults:{kind:'any'},
+    rule:[['k','Gave'],['p','kind','gkindpl'],['t','last year, none so far this year']],
+    test:(x,p)=>{const a=ofK(x,p.kind);return a.some(g=>yearOf(g.date)===LAST_YEAR)&&!a.some(g=>yearOf(g.date)===THIS_YEAR)},
     hint:'Reach out before year end, while last year’s gift is still fresh.'},
-   {id:'syb',name:'Gave before, not recently',auto:'lastcall',short:()=>'Nothing last year or this year',defaults:{},
-    rule:[['k','Gave:'],['t','before last year, nothing since']],
-    test:x=>x.gifts.every(g=>yearOf(g.date)<LAST_YEAR),
+   {id:'syb',name:'SYBUNT',auto:'lastcall',short:p=>'Gave '+KP[p.kind]+' before last year, none since',defaults:{kind:'any'},
+    rule:[['k','Gave'],['p','kind','gkindpl'],['t','before last year, none since']],
+    test:(x,p)=>{const a=ofK(x,p.kind);return a.length>0&&a.every(g=>yearOf(g.date)<LAST_YEAR)},
     hint:'Long gone quiet. Worth one win-back message before you stop emailing them.'},
-   {id:'back',name:'Came back',auto:'welcomeback',ruleOnGift:true,short:p=>'Gave again after '+p.m+'+ months away',defaults:{m:12},giftKey:'last',
-    rule:[['k','Last gift:'],['t','in the last 12 months, after'],['p','m','months'],['t','or more without giving']],
-    test:(x,p)=>{if(x.gifts.length<2)return false;const prev=x.gifts[x.gifts.length-2];return ago(x.last.date)<12*MONTH&&(x.last.date-prev.date)>=p.m*MONTH},
+   {id:'back',name:'Came back',auto:'welcomeback',ruleOnGift:true,short:p=>'Last '+KL[p.kind]+' in the last 12 months, after '+p.m+'+ months away',defaults:{kind:'any',m:12},giftKey:'last',
+    rule:[['k','Last'],['p','kind','gkind'],['t','in the last 12 months, after'],['p','m','months'],['t','or more without giving']],
+    test:(x,p)=>{const a=ofK(x,p.kind);if(a.length<2)return false;const g=a[a.length-1],prev=a[a.length-2];return ago(g.date)<12*MONTH&&(g.date-prev.date)>=p.m*MONTH},
     hint:'Proof that win-back works. A warm “welcome back” keeps them this time.'}
  ]},
  {id:'up',name:'Upgrades',segs:[
    {id:'once',name:'Gave only once',giftKey:'first',giftLabel:'Their gift',giftName:'their only donation',statsLabel:'Their gifts',short:()=>'Exactly 1 one-time gift, never recurring',defaults:{},
     rule:[['k','Total gifts:'],['t','exactly 1 one-time gift, never recurring']],test:x=>x.gifts.length===1&&!x.plan&&!x.gifts[0].recurring,
     hint:'Most first-time donors never give again. A second ask turns them into supporters.',auto:'second'},
-   {id:'couldrec',name:'Could give recurring',short:p=>p.n+' or more one-time gifts, no recurring plan',defaults:{n:2},
-    rule:[['k','One-time gifts:'],['p','n','count'],['t','or more, and no recurring plan']],test:(x,p)=>!x.plan&&x.gifts.length>=p.n,
+   {id:'couldrec',name:'Could give recurring',kinds:['any','one-time','repeated'],short:p=>'Gave '+p.n+' or more times, never had a recurring plan',defaults:{n:2},
+    rule:[['k','Gave:'],['p','n','count'],['t','or more times, and never had a recurring plan']],test:(x,p)=>!x.plan&&x.gifts.length>=p.n&&x.gifts.every(g=>!g.recurring),
     hint:'They keep coming back on their own. Invite them to give on a schedule that suits them.',auto:'recurring'},
-   {id:'mid',name:'Mid-level donors',short:p=>money(p.min)+' to '+money(p.max)+' in total',defaults:{min:1000,max:9999},auto:'more',
-    rule:[['k','Lifetime giving:'],['t','between'],['p','min','money'],['t','and'],['p','max','money']],
-    test:(x,p)=>x.lifetime>=p.min&&x.lifetime<=p.max,
+   {id:'mid',name:'Mid-level donors',short:p=>money(p.min)+' to '+money(p.max)+' in '+KP[p.kind]+', '+OPT.period.find(o=>o.v===p.per).l,defaults:{kind:'any',per:365,min:1000,max:9999},auto:'more',
+    rule:[['k','Total of'],['p','kind','gkindpl'],['p','per','period'],['t','between'],['p','min','money'],['t','and'],['p','max','money']],
+    test:(x,p)=>{const t=sumK(x,p.kind,p.per);return t>=p.min&&t<=p.max},
     hint:'Often overlooked. A personal thank-you and a slightly larger ask can move them up.'},
-   {id:'major',name:'Major donors',short:p=>money(p.min)+' or more in total',defaults:{min:10000},
-    rule:[['k','Lifetime giving:'],['p','min','money'],['t','or more']],test:(x,p)=>x.lifetime>=p.min,
+   {id:'major',name:'Major donors',short:p=>money(p.min)+' or more in '+KP[p.kind]+', '+OPT.period.find(o=>o.v===p.per).l,defaults:{kind:'any',per:365,min:10000},
+    rule:[['k','Total of'],['p','kind','gkindpl'],['p','per','period'],['t','at least'],['p','min','money']],test:(x,p)=>sumK(x,p.kind,p.per)>=p.min,
     hint:'Usually best handled one-on-one by staff rather than with automated emails.'}
  ]}
 ];
 const SEG = {}; BUCKETS.forEach(b=>b.segs.forEach(s=>{s.bucket=b;SEG[s.id]=s}));
+
+// ---------- The same segments, grouped by goal ----------
+// Buckets (above) still decide which narrow-down options fit a segment. Goals only change how users find it.
+const INTENTS = [
+ {id:'thank',name:'Thank and steward',ids:['new','newrec','back','active','major']},
+ {id:'more',name:'Ask for more',ids:['once','couldrec','bonus','mid']},
+ {id:'keep',name:'Keep them giving',ids:['failed','paused','lapsing']},
+ {id:'win',name:'Win back',ids:['cancelled','lapsed','lyb','syb']}
+];
+INTENTS.forEach(g=>g.segs=g.ids.map(id=>SEG[id]));
+// Donor-type view: grouped by how people give. (BUCKETS above stay internal: they decide which narrow-down options fit.)
+const TYPES = [
+ {id:'tnew',name:'New and one-time',ids:['new','newrec','once']},
+ {id:'trep',name:'Repeated',ids:['couldrec','back']},
+ {id:'trec',name:'Recurring',ids:['active','failed','paused','cancelled'],hidden:['bonus']},
+ {id:'tlapse',name:'Lapsed',ids:['lapsing','lapsed','lyb','syb']},
+ {id:'tlevel',name:'Giving level',ids:['mid','major']}
+];
+TYPES.forEach(g=>g.segs=g.ids.map(id=>SEG[id]));
+// In the donor-type view, segments are named for who the donors are, not for what to ask them.
+// Goal-only segments (like “Recurring donors for an extra gift”) stay in the goal view.
+const TYPE_NAMES={couldrec:'Repeat donors',once:'One-time donors',back:'Returning donors'};
+Object.keys(TYPE_NAMES).forEach(id=>{const sg=SEG[id], g=sg.name; Object.defineProperty(sg,'name',{get:()=>S&&S.group==='type'?TYPE_NAMES[id]:g,configurable:true});});
+const GROUPS = () => S.group==='type' ? TYPES : INTENTS;
+const groupOf = seg => GROUPS().find(g=>g.segs.includes(seg)||(g.hidden||[]).includes(seg.id)) || INTENTS.find(g=>g.segs.includes(seg));
 
 const AUTOS = {
   welcome:{name:'Welcome new donors',mails:[['Day 0','Thank you for your first gift','Thank-you'],['Day 7','Here’s what your gift is doing','Impact update'],['Day 30','Meet the people behind the work','Story']],stops:['They give again','They unsubscribe','Day 45 is reached']},
@@ -552,23 +673,30 @@ const AUTOS = {
   yearend:{name:'Year-end reminder',mails:[['Day 0','Your support last year mattered','Impact update'],['Day 14','Will you join us again this year?','Year-end ask']],stops:['They give again','They unsubscribe','Day 30 is reached']},
   lastcall:{name:'One last win-back',mails:[['Day 0','We still think of you','Impact update'],['Day 21','One last note from us','Final ask']],stops:['They give again','They unsubscribe','Day 30 is reached']},
   welcomeback:{name:'Welcome back',mails:[['Day 0','Welcome back, and thank you','Thank-you'],['Day 30','Here’s what your return made possible','Impact update']],stops:['They unsubscribe','Day 45 is reached']},
+  extra:{name:'Ask recurring donors for an extra gift',mails:[['Day 0','A one-time gift on top of your regular support','Upgrade ask'],['Day 12','Here’s what an extra gift could do this season','Impact update'],['Day 18','A last note before the year ends','Final ask']],stops:['They make an extra gift, one-time or repeated (their regular payment doesn’t count)','Their plan stops','They unsubscribe','Day 30 is reached']},
   more:{name:'Ask for a bigger gift',mails:[['Day 0','You’ve made a real difference','Impact update'],['Day 10','Could you go a little further this time?','Upgrade ask']],stops:['They give again','They unsubscribe','Day 30 is reached']}
 };
 const TEMPLATES = ['Thank-you','Impact update','We miss you','Gentle ask','Card update','Recurring invite','Upgrade ask','Welcome back'];
 
 // ---------- Notes per step ----------
 const NOTES = {
- 1:{title:'Buckets closed (default)',items:[
-   ['bar','A coaching question, any purpose','“Who do you want to find?” invites the user in without assuming what happens next: an email, an export, a report or an automation. Four buttons on one line, so the table stays where users expect it.'],
+ 1:{title:'Goals closed (default)',items:[
+   ['bar','Start from the goal','“What do you want to do?” groups segments by what the organization is trying to achieve, from Sam’s template exploration. Inside each goal, segments still describe people, so the list works for an email, an export, a report or an automation.'],
+   ['group','Or group by donor type','A switch groups segments by how people give: new and one-time, repeated, recurring and lapsed, plus giving level. Every group holds at least two segments; a menu with one item is just a filter with extra clicks. Here segments are named for who the donors are (“Repeat donors”, not “Could give recurring”), and goal-only segments like “Recurring donors for an extra gift” stay in the goal view. Same rules underneath.'],
    ['details','Fields stay available','The existing filter chips and advanced filter are still here for anyone who wants full control.'],
    ['stats','No counts on buckets','Counting every segment on every page load is heavy. The only number shown is the result of what the user picked.']]},
- 2:{title:'One bucket open',items:[
+ 2:{title:'One goal open',items:[
    ['menu','Each segment says who is in it','Name plus the rule in plain words, so nobody has to guess what “lapsing” means.'],
-   ['menurule','Editable values look editable','Values like “30 days” are underlined in blue, and a line says they can be changed after picking. Without this, users read them as fixed definitions.'],
-   ['bar','Named by who, not by what to do','Segments describe people. Emailing or automating is a separate step.']]},
+   ['menurule','Editable values look editable','Values like “7 days” are underlined in blue, and a line says they can be changed after picking. Without this, users read them as fixed definitions.'],
+   ['bar','Related asks sit together','“Ask for more” holds every upgrade: a second gift, giving recurring, an extra gift from recurring donors, and mid-level donors. Grouped by donor type, the recurring ask and the extra-gift ask were in two different buckets.'],
+   ['steward','Major donors are stewarded, not upgraded','They sit under “Thank and steward”: the goal is keeping the relationship strong so the big gift comes again, not asking for more (from Andrea’s research). Stewardship is one of the CRM’s main goals.'],
+   ['annual','Giving over a period you choose','Mid-level and major donors default to giving in the last 12 months, rolling, so a loyal $1,000-a-year donor isn’t counted as major after ten years. The period is editable: all time, 12 months, 6 months, 90 days or 30 days. Open question for testing: some orgs may mean last calendar year or their fiscal year. “Largest gift” covers orgs that define major donors by one big gift.'],
+   ['kind','Every gift says which kind','Wherever a segment talks about a gift, a choice says which kind: any gift, one-time, repeated or recurring payment. “Last gift of any kind 6 to 12 months ago, none since” means they gave nothing at all since; “last recurring payment” finds recurring donors who stopped.'],
+   ['names','Familiar terms kept','LYBUNT and SYBUNT keep their names, with the plain description underneath, because fundraisers already use them.']]},
  3:{title:'Segment picked',items:[
-   ['chosen','The pick replaces the bucket','The button now reads “Lapsing donors ✕”, so the current list is always visible and easy to clear.'],
+   ['chosen','The pick replaces the goal','The button now reads “Recurring donors for an extra gift ✕”, so the current list is always visible and easy to clear.'],
    ['rule','One rule, in plain words','The blue values are editable. Click one to change it.'],
+   ['readback','A sentence says what the list means','“Showing: …” reads back the preset and every rule added to it, so nobody has to work out how rules combine. It updates as values change.'],
    ['hint','The tip sells the automation','One line of fundraising advice explains why the group matters, and right under it the matching automation is offered. Users see why they’d automate before they’re asked to. Segments without a ready-made automation offer building their own.'],
    ['stats','Numbers follow the list','Cards count the gifts that put people in this list. Lifetime totals move to a caption.'],
    ['actions','Other things to do with the list','Send a one-off email, export it, or save it as a segment. Automating lives with the tip above, where the reason for it is.'],
@@ -577,9 +705,18 @@ const NOTES = {
    ['rule','Change a value, the list updates','Here 6 months becomes 3. The segment type stays the same.'],
    ['edited','Marked as edited','An “Edited” tag shows the list no longer uses the defaults. “Reset” brings them back.']]},
  5:{title:'Narrowing down (optional)',items:[
-   ['nmenu','Options fit the segment','“Narrow down” only offers details that make sense here, in two groups: about the gift that put them in the list, and about the person. Recurring donors get schedule, recurring amount and their last gift (when, how much, which campaign); lapsing donors get gift amount, recurring plan, largest gift and more.'],
+   ['nmenu','Options fit the segment','“Narrow down” sits at the bottom of the rules, before the automation, so it reads as the next step in shaping the list. It only offers details that make sense for the segment: about their gifts, and about the person. The advanced filter is left out of this version and will be explored separately, probably as part of “Filter by details”.'],
    ['narrowrule','The user’s own rules have a ✕','The segment’s rule can’t be removed by accident. Only what the user added can.'],
-   ['narrowrule2','Same gift, not two facts','“That gift came through” means the gift that put them in the list. Not any gift, any time.'],
+   ['scope','The gift is named first','“Narrow down” offers a whole gift, not loose gift rules: “A gift” adds a block that starts by choosing which gift and what type, “Their last [repeated gift]”, and rules about it are added inside the block with “+ Add a rule about this gift”. Every line reads as part of one sentence about one gift. ✕ on the block removes the gift and its rules.'],
+   ['gjoin','Every gift says how it relates to the list','Each gift block starts with its connector to everything above it: And (they also match this gift), Or (this gift is enough on its own), or But not (leave out people who match it). The first gift has one too, so “Lapsed donors, but not those whose last gift came through the Gala” is one choice away.'],
+   ['neg','Which gift, and “not”','The gift block starts by choosing which gift: their first, their last, any of their, or none of their. “None of their …” is exclusion. How many gifts someone made is a separate filter about the person, “Number of gifts: at least [3] [repeated gifts]”, not part of a gift block. Country, state and schedule switch between “is” and “is not”.'],
+   ['giving','One giving filter, with a timeline','“Giving: at least $X” comes with a choice: per payment (their plan, recurring donors only), in total all time, or in total over the last 12 months to 30 days. It replaces separate “recurring amount” and “total donated” filters, and isn’t offered where it would repeat the segment’s own rule (Gave only once, Mid-level, Major). Amounts and counts are typed in.'],
+   ['where','Country, then state','Location is split into Country and State / province. The state list follows the country: US states, Canadian provinces, UK nations or Australian states. Email marketing isn’t offered here: people who opted out are left out of emails automatically.'],
+   ['method','Not every gift comes through a campaign','“Payment method” is offered on every segment: card, bank transfer, PayPal, Apple / Google Pay, cash, check, donor-advised fund, stock and crypto. Offline gifts entered by staff also count.'],
+   ['kinds','Only the gift types that can exist','“Could give recurring” means they never had a recurring plan (people who had one belong in Win back), so its gift types are any, one-time or repeated, never recurring payment. “Recurring donors for an extra gift” treats any non-recurring gift as the extra gift: a recurring donor’s extra gift is recorded as repeated, so letting users pick only “one-time” would let people who just gave keep receiving the ask.'],
+   ['another','Another gift, joined with And, Or or But not','“Another gift” adds a separate gift with its own rules, joined to the rest with a choice: And, Or, or But not (exclusion). Example: cancelled donors with at least 3 recurring payments, but not those who made a repeated gift at any time. “When” offers “at any time”, a window, and on recurring segments “after their last recurring payment”. “How many” sits in each gift’s own rule menu.'],
+   ['methodsrec','Payment methods that can recur','When the gift is a recurring payment, payment method only offers what Donorbox supports for recurring plans: card, Apple / Google Pay, bank transfer (ACH, Canadian PAD, UK BACS, AU direct debit, SEPA) and PayPal. Cash, check, DAF, stock and crypto appear only for other gifts. To confirm with the Fundraising team.'],
+   ['narrowrule2','Same gift, not two facts','Each line under the gift continues the same sentence: “Their last gift came through Feed the Community, was at least $100” is one gift meeting both rules. Not two facts about different gifts.'],
    ['srccol','Column appears only now','“Came through” shows up because the user filtered by campaign. Remove the rule and it goes away.'],
    ['save','Save it as their own','“Save as my segment” keeps this version as a dynamic list (next step).']]},
  6:{title:'Save as a segment',items:[
@@ -596,7 +733,7 @@ const NOTES = {
    ['autocust','Every email needs the org’s own content','Templates come with clearly marked parts to replace: story, photo, donation link, sign-off. Each shows “Needs your story and details” until customized. Templates customized before show as done.'],
    ['autorm','Remove emails they don’t want','Each email has a ✕. Removed emails move to a “Removed” line with “Add back”, the checklist only counts the emails that are left, and at least one email has to stay. The waits adjust around what’s left.'],
    ['autocheck','Nothing sends until it’s ready','“Turn on” stays disabled until every email is customized, sender details are added and the domain is verified. No branding or sender details are assumed.'],
-   ['autostop','When it stops, in plain words','So a “we miss you” email never goes to someone who just gave.'],
+   ['autostop','When it stops, in plain words','So a “we miss you” email never goes to someone who just gave. For recurring donors asked for an extra gift, only a one-time gift stops it: their regular payment doesn’t count. That has to be checked on the gift itself, not on “last donation date”.'],
    ['autoenroll','No surprise blasts','The user chooses whether today’s matches are included when they turn it on.'],
    ['autodep','Depends on Mailjet','Needs Donorbox to create and publish workflows in customer accounts through the API. Open question for Mailjet.']]},
  9:{title:'Build your own',items:[
@@ -618,6 +755,12 @@ const NOTES = {
    ['done','One click with their provider','“Connect with Cloudflare” signs them in and adds ownership, SPF and DKIM together, merging into any existing SPF record. Depends on the Entri questions for Mailjet, or on Cloudflare’s own one-click setup.'],
    ['manual','Manual setup stays as a fallback','For providers without one-click setup: the records with copy buttons, plus a way to send them to whoever manages the website.'],
    ['dinline','Asked at the moment it matters','Sender and domain appear as one item in the “Before you turn it on” checklist, when the user is about to send, instead of a warning banner on every page.']]},
+ 14:{title:'Combine segments',items:[
+   ['segblock','Segments become blocks','In the advanced filter, the picked segment is one block and “+ Add segment” adds another, from the same goals. Each block keeps its own rule, locked, and can be removed with ✕. Here: mid-level donors who are also lapsing.'],
+   ['segjoin','Blocks combine on the person','“and” between blocks means the person is in both lists; “or” means either. It never means the same donation.'],
+   ['seggift','The same-gift warning','Shown whenever segments are combined. Blocks can match different gifts: the Makindu case, where “recurring” and “one-time gift in the last 30 days” matched a regular payment plus an old gift. To require one gift, add conditions inside one block.'],
+   ['segsimple','The simple view stays honest','Back in the simple view, an added segment shows as “Also in: Lapsing donors” with a ✕, and the list is marked Edited.'],
+   ['segvals','Prototype limit','Values in added blocks are fixed at their defaults here. In the product, each block’s values would be editable.']]},
  12:{title:'Customize an email',items:[
    ['eph','Parts to replace are obvious','The template marks exactly what the org must add: logo, a short story, the donation link and a sign-off (photo optional). Nothing about their brand is assumed. Try it: fill them in, save, then open Preview.'],
    ['elogo','Add the logo once, reuse it','After a logo is added to one email, the others offer “Use the logo from your other email”. In the real editor this could be a saved section.'],
@@ -626,7 +769,7 @@ const NOTES = {
 };
 
 // ---------- State ----------
-const fresh = () => ({tab:'proto',openBucket:null,seg:null,params:{},pop:null,narrowMenu:false,cond:{},joinTop:'and',joinGift:'and',modal:null,enroll:'new',notes:true,adv:false,view:null,bmode:'own',custom:{},content:{},draft:{},removed:{},senders:[],verified:[],sname:'',semail:'',already:false,sender:false,domain:false,editTpl:null});
+const fresh = () => ({tab:'proto',group:'goal',xblocks:[],xbMenu:null,countKind:null,neg:{},giftNot:false,extraNot:{},extra:[],segMenu:false,openBucket:null,seg:null,params:{},pop:null,narrowMenu:false,cond:{},joinTop:'and',joinGift:'and',modal:null,enroll:'new',notes:true,adv:false,view:null,bmode:'own',custom:{},content:{},draft:{},removed:{},senders:[],verified:[],sname:'',semail:'',already:false,sender:false,domain:false,editTpl:null});
 let S = fresh();
 
 function step(){
@@ -637,13 +780,14 @@ function step(){
   if(S.modal==='automate'||S.modal==='preview') return 8;
   if(S.modal==='autochoose') return 7;
   if(S.modal==='save') return 6;
+  if(S.extra.length) return 14;
   if(activeConds().length) return 5;
   if(S.seg && (S.pop||edited())) return 4;
   if(S.seg) return 3;
   if(S.openBucket) return 2;
   return 1;
 }
-function edited(){ if(!S.seg) return false; const d=SEG[S.seg].defaults; return Object.keys(d).some(k=>S.params[k]!==d[k]) || usesOr(); }
+function edited(){ if(!S.seg) return false; const d=SEG[S.seg].defaults; return Object.keys(d).some(k=>S.params[k]!==d[k]) || usesOr() || S.extra.length>0 || S.xblocks.length>0; }
 function usesOr(){ return S.joinTop==='or'||S.joinGift==='or'; }
 function pin(key){
   if(!S.notes || S.tab!=='proto') return '';
@@ -653,7 +797,9 @@ function pin(key){
 
 // ---------- Filtering ----------
 function matchingGift(x,seg){
-  if(seg && seg.giftKey) return [x[seg.giftKey]];
+  const w = seg ? whichNow() : 'any';
+  if(seg && (w==='first'||w==='last')){ const k=kindNow(), g=w==='first'?firstK(x,k):lastK(x,k); return g?[g]:[]; }
+  if(seg && seg.giftKey && w==='none'){ const g=lastK(x,S.params.kind||'any'); return g?[g]:[]; }
   return x.gifts;
 }
 function results(){
@@ -664,22 +810,31 @@ function results(){
   const giftOk = g => comb(S.joinGift, giftConds.map(c=>c.gift(g,S.cond[c.id])));
   // The "same gift" group: the segment's own gift rule (if any) plus gift conditions, combined with the group's and / or.
   const groupOk = x => {
-    if(seg.giftKey){
-      const g = matchingGift(x,seg)[0], parts=[];
+    // "None of their …": no gift of that kind meets the gift rules. Only offered when the segment's own rule isn't about a gift.
+    if(giftNotOn()) return giftConds.length ? !x.gifts.some(g=>okK(g,kindNow())&&comb(S.joinGift,giftConds.map(c=>c.gift(g,S.cond[c.id])))) : null;
+    if(whichNow()==='first'||whichNow()==='last'){
+      const g = matchingGift(x,seg)[0], parts=[]; if(!g) return false;
       if(seg.ruleOnGift) parts.push(seg.test(x,p));
       giftConds.forEach(c=>parts.push(c.gift(g,S.cond[c.id])));
       return parts.length ? comb(S.joinGift,parts) : null;
     }
-    return giftConds.length ? x.gifts.some(giftOk) : null;
+    return giftConds.length ? x.gifts.some(g=>okK(g,kindNow())&&giftOk(g)) : null;
   };
   let people = PEOPLE.filter(x=>{
     const parts=[];
     if(!seg.ruleOnGift) parts.push(seg.test(x,p));
-    const gm = groupOk(x); if(gm!==null) parts.push(gm);
-    personConds.forEach(c=>parts.push(c.person(x,S.cond[c.id])));
-    return comb(S.joinTop,parts);
+    const gm = groupOk(x);
+    personConds.forEach(c=>parts.push(c.person(x,S.cond[c.id])!==!!S.neg[c.id]));
+    // Added segments: each is checked on its own, with its own gift. They join at the person level.
+    S.extra.forEach(id=>parts.push(SEG[id].test(x,SEG[id].defaults)!==!!S.extraNot[id]));
+    let r = comb(S.joinTop,parts);
+    // Each gift joins with its own connector: And / Or / But not
+    const joinIn = (r,ok,j) => j==='or' ? (r||ok) : j==='not' ? (r&&!ok) : (r&&ok);
+    if(gm!==null) r = joinIn(r, gm, S.gjoin||'and');
+    for(const b of S.xblocks) r = joinIn(r, xblockOk(x,b), b.join||'and');
+    return r;
   });
-  const gifts = people.flatMap(x=>matchingGift(x,seg).filter(g=>!giftConds.length||giftOk(g)));
+  const gifts = people.flatMap(x=>matchingGift(x,seg).filter(g=>giftNotOn()||!giftConds.length||giftOk(g)));
   return {people,gifts,scoped:true};
 }
 
@@ -700,7 +855,7 @@ function render(){
   </div>
   ${S.tab==='proto'?`
   <div class="steps" role="navigation" aria-label="Steps">
-    ${['Buckets closed','Bucket open','Segment picked','Adjust a number','Narrow down','Save as segment','Automate: choose','Ready-made','Build your own','Builder: own','Builder: ready-made','Customize an email','Sender & domain'].map((t,i)=>`<button class="step" data-a="goto" data-v="${i+1}" ${st===i+1?'aria-current="step"':''}><span class="n">${i+1}</span>${t}</button>`).join('')}
+    ${['Goals closed','Goal open','Segment picked','Adjust a number','Narrow down','Save as segment','Automate: choose','Ready-made','Build your own','Builder: own','Builder: ready-made','Customize an email','Sender & domain'].map((t,i)=>`<button class="step" data-a="goto" data-v="${i+1}" ${st===i+1?'aria-current="step"':''}><span class="n">${i+1}</span>${t}</button>`).join('')}
     <button class="notes-toggle" data-a="notes" aria-pressed="${S.notes}"><span class="sw"></span>Notes</button>
   </div>
   <div class="stage ${S.notes?'':'no-notes'}">
@@ -739,9 +894,9 @@ function renderApp(){
 }
 function renderBuckets(){
   const seg=S.seg?SEG[S.seg]:null;
-  return `<div class="reach"><span class="label">Who do you want to find?</span>
-    ${BUCKETS.map(b=>{
-      const isSel = seg && seg.bucket.id===b.id;
+  return `<div class="reach"><span class="label">${S.group==='type'?'Who do you want to find?':'What do you want to do?'}</span>
+    ${GROUPS().map(b=>{
+      const isSel = seg && (b.segs.includes(seg) || (b.hidden||[]).includes(seg.id));
       const open = S.openBucket===b.id;
       const btn = isSel
         ? `<button class="bbtn selected" data-a="bucket" data-v="${b.id}" aria-expanded="${open}" aria-haspopup="true">${esc(seg.name)}<span class="x" data-a="clear" role="button" aria-label="Clear segment" tabindex="0">✕</span></button>${pin('chosen')}`
@@ -750,7 +905,8 @@ function renderBuckets(){
           <div class="mhint"><span class="ev">Underlined values</span> are starting points. You can change them after you pick.${pin('menurule')}</div>
           ${b.segs.map(s=>`<button class="seg" role="menuitem" data-a="pick" data-v="${s.id}"><span><span class="t">${esc(s.name)}</span><span class="r">${staticRule(s)}</span></span><span class="go">›</span></button>`).join('')}</div>` : '';
       return `<div class="bucket">${btn}${menu}</div>`;
-    }).join('')}${pin('bar')}</div>`;
+    }).join('')}${pin('bar')}
+    <span class="groupby" role="group" aria-label="Group segments by"><span class="gl">Group by</span><button data-a="group" data-v="goal" aria-pressed="${S.group!=='type'}">Goal</button><button data-a="group" data-v="type" aria-pressed="${S.group==='type'}">Donor type</button>${pin('group')}</span></div>`;
 }
 function staticRule(s){
   return s.rule.map(t=>{
@@ -759,7 +915,13 @@ function staticRule(s){
     return `<span class="ev">${esc(o?o.l:s.defaults[t[1]])}</span>`;
   }).join(' ');
 }
+// Counts and amounts are typed, not picked from a short list.
+const NUMOPT = {count:'count',money:'money',gamt:'money',ramt:'money'};
+function numInput(target,cur,kind,label){
+  return `<span class="val num">${kind==='money'?'<span class="cur">$</span>':''}<input type="number" min="1" step="1" inputmode="numeric" class="numin" data-num="${target}" value="${esc(cur)}" aria-label="${esc(label)}"></span>`;
+}
 function valPill(seg,key,optKey){
+  if(NUMOPT[optKey]) return numInput('p:'+key,S.params[key],NUMOPT[optKey],key);
   const cur=S.params[key]; const opts=OPT[optKey]; const label=(opts.find(o=>o.v===cur)||{l:cur}).l;
   const open=S.pop===key;
   return `<span class="val"><button class="vbtn" data-a="pop" data-v="${key}" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="set" data-k="${key}" data-v="${o.v}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
@@ -767,20 +929,22 @@ function valPill(seg,key,optKey){
 // Advanced filter rows, pre-filled from the picked segment.
 // Each row: [field, operator, value tokens]. Value tokens reuse the editable pills.
 const ADV = {
-  new:[['First donation date','is in the last',[['p','days','days']]]],
+  new:[['Donation type','is',[['p','kind','gkind']]],['First donation date','is in the last',[['p','days','days']]]],
   active:[['Recurring plan status','is',[['t','Active']]]],
+  newrec:[['First recurring payment date','is in the last',[['p','days','days']]]],
+  bonus:[['Recurring plan status','is',[['t','Active']]],['Donation type','is',[['p','xk','xkind']]],['Donations of that type','none in the last',[['p','days','days']]]],
   failed:[['Recurring plan status','is',[['t','Payment failed']]]],
   paused:[['Recurring plan status','is',[['t','Paused']]]],
   cancelled:[['Recurring plan status','is',[['t','Cancelled']]],['Plan cancelled date','is in the last',[['p','days','cdays']]]],
-  lapsing:[['Most recent donation date','is between',[['p','to','months'],['t','ago and'],['p','from','months'],['t','ago']]]],
-  lapsed:[['Most recent donation date','is more than',[['p','m','months'],['t','ago']]]],
-  lyb:[['Donation date','is in',[['t','Last year']]],['Donation date','is not in',[['t','This year']]]],
-  syb:[['Donation date','is before',[['t','Last year']]],['Donation date','is not in',[['t','Last year or this year']]]],
-  back:[['Most recent donation date','is in the last',[['t','12 months']]],['Time since the donation before it','is at least',[['p','m','months']]]],
-  couldrec:[['Donation type','is',[['t','One-time only']]],['Number of donations','is at least',[['p','n','count']]],['Recurring plan','does not exist',[]]],
+  lapsing:[['Donation type','is',[['p','kind','gkind']]],['Most recent donation date','is between',[['p','to','months'],['t','ago and'],['p','from','months'],['t','ago']]]],
+  lapsed:[['Donation type','is',[['p','kind','gkind']]],['Most recent donation date','is more than',[['p','m','months'],['t','ago']]]],
+  lyb:[['Donation type','is',[['p','kind','gkindpl']]],['Donation date','is in',[['t','Last year']]],['Donation date','is not in',[['t','This year']]]],
+  syb:[['Donation type','is',[['p','kind','gkindpl']]],['Donation date','is before',[['t','Last year']]],['Donation date','is not in',[['t','Last year or this year']]]],
+  back:[['Donation type','is',[['p','kind','gkind']]],['Most recent donation date','is in the last',[['t','12 months']]],['Time since the donation before it','is at least',[['p','m','months']]]],
+  couldrec:[['Donation type','is',[['t','One-time or repeated']]],['Number of donations','is at least',[['p','n','count']]],['Recurring plan','does not exist',[]]],
   once:[['Number of donations','is',[['t','1']]],['Donation type','is',[['t','One-time']]],['Recurring plan','has never existed',[]]],
-  mid:[['Total donated','is between',[['p','min','money'],['t','and'],['p','max','money']]]],
-  major:[['Total donated','is at least',[['p','min','money']]]]
+  mid:[['Donation type','is',[['p','kind','gkindpl']]],['Total donated in the last 12 months','is between',[['p','min','money'],['t','and'],['p','max','money']]]],
+  major:[['Donation type','is',[['p','kind','gkindpl']]],['Total donated in the last 12 months','is at least',[['p','min','money']]]]
 };
 function advVal(seg,tokens){return tokens.map(t=>t[0]==='p'?valPill(seg,t[1],t[2]):`<span class="abox">${esc(t[1])}</span>`).join(' ')}
 function advRow(conn,field,op,val,removeId){
@@ -789,6 +953,7 @@ function advRow(conn,field,op,val,removeId){
 const WHERE = '<span class="aconn">Where</span>', FIXED_AND = '<span class="aconn" title="Part of the segment’s definition">and</span>';
 function joinBtn(level){const j=level==='top'?S.joinTop:S.joinGift;return `<button class="aconn join" data-a="join" data-v="${level}" aria-label="Switch between and and or. Now: ${j}">${j} ▾</button>`}
 function condPill(c){
+  if(NUMOPT[c.opt]) return numInput('c:'+c.id,S.cond[c.id],NUMOPT[c.opt],c.name);
   const key='c:'+c.id, cur=S.cond[c.id], opts=condOpts(c), open=S.pop===key;
   const label=(opts.find(o=>o.v===cur)||{l:cur}).l;
   return `<span class="val"><button class="vbtn" data-a="pop" data-v="${key}" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="cset" data-c="${c.id}" data-v="${esc(o.v)}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
@@ -806,44 +971,176 @@ function renderAdv(seg){
     else if(segItems.length) top.push({html:`<div class="agroup seggroup"><div class="ag-h">${esc(seg.name)}</div>${segItems.map((it,i)=>advRow(i?FIXED_AND:WHERE,...it.cells)).join('')}</div>`});
   }
   if(giftItems.length){
-    const which = seg.giftName?seg.giftName:seg.giftKey==='first'?'their first donation':seg.giftKey==='last'?'their most recent donation':'any one of their donations';
-    top.push({html:`<div class="agroup"><div class="ag-h">Conditions on ${which} (these apply to the same gift)</div>${giftItems.map((it,i)=>advRow(conn(giftItems,i,'gift'),...it.cells)).join('')}</div>`});
+    const which = giftNotOn() ? 'none of their '+KP[kindNow()]+' (no gift of this kind meets these)' : (seg.giftKey?giftWord(seg):'one of their donations, of this kind: '+KL[kindNow()])+' (these apply to the same gift)';
+    top.push({html:`<div class="agroup"><div class="ag-h">Conditions on ${which}</div>${giftItems.map((it,i)=>advRow(conn(giftItems,i,'gift'),...it.cells)).join('')}</div>`});
   }
-  pc.forEach(c=>top.push({cells:[...c.adv(seg),condPill(c),c.id]}));
-  const body = top.map((t,i)=>{const cn=i?joinBtn('top'):WHERE;return t.cells?advRow(cn,...t.cells):`<div class="arow grp">${cn}${t.html}</div>`}).join('');
+  pc.forEach(c=>{const ad=c.adv(seg).slice(); if(S.neg[c.id]) ad[1]=ad[1]+' not'; top.push({cells:[...ad,condPill(c),c.id]})});
+  if(S.extra.length && top.length){ // label the picked segment as a block too, so blocks read as equals
+    top[0] = {html:`<div class="agroup seggroup segblock"><div class="ag-h">Segment: ${esc(seg.name)}</div>${(top[0].html?top[0].html:advRow(WHERE,...top[0].cells))}</div>`};
+  }
+  S.extra.forEach((id,k)=>{
+    const xs=SEG[id], rows=ADV[id]||[];
+    const val = tokens => tokens.map(t=>{if(t[0]!=='p') return `<span class="abox">${esc(t[1])}</span>`; const o=OPT[t[2]].find(o=>o.v===xs.defaults[t[1]]); return `<span class="abox">${esc(o?o.l:xs.defaults[t[1]])}</span>`}).join(' ');
+    top.push({html:`<div class="agroup seggroup segblock"><div class="ag-h">${S.extraNot[id]?'Not in segment':'Segment'}: ${esc(xs.name)}<span class="spacer"></span><button class="rm" data-a="xrm" data-v="${id}" aria-label="Remove ${esc(xs.name)}">✕</button>${k===0?pin('segblock'):''}</div>${rows.map((r,i)=>advRow(i?FIXED_AND:WHERE,r[0],r[1],val(r[2]),null)).join('')}</div>`});
+  });
+  const body = top.map((t,i)=>{const cn=i?joinBtn('top')+(S.extra.length&&i===1?pin('segjoin'):''):WHERE;return t.cells?advRow(cn,...t.cells):`<div class="arow grp">${cn}${t.html}</div>`}).join('');
+  const warn = S.extra.length ? `<div class="samegift"><b>Each segment is checked on its own.</b> If more than one is about donations, they can match different donations. To require one gift to meet several conditions, add them to a single segment’s “same gift” group.${pin('seggift')}</div>` : '';
+  const pickable = INTENTS.map(g=>({g,segs:g.segs.filter(x=>x.id!==seg.id&&!S.extra.includes(x.id))})).filter(o=>o.segs.length);
+  const segMenu = S.segMenu ? `<div class="nmenu" role="menu">${pickable.map(o=>`<div class="ngh">${esc(o.g.name)}</div>${o.segs.map(x=>`<button role="menuitem" data-a="xadd" data-v="${x.id}">${esc(x.name)}<small>${esc(x.short(x.defaults))}</small></button>`).join('')}`).join('')}</div>` : '';
   return `<div class="panel adv">
     <div class="ph"><h4>Advanced filter</h4><span class="spacer"></span><button class="btn link" data-a="advback">Back to simple view</button></div>
     <p class="alead">Started from <b>${esc(seg.name)}</b>. Change any condition, or add your own. Click <b>and</b> to switch to <b>or</b>.${pin('join')}</p>
-    <div class="rules">${body}
-      <div class="aadd"><span class="narrow"><button class="btn link" data-a="nmenu" aria-expanded="${S.narrowMenu}">+ Add condition</button>${S.narrowMenu?`<div class="nmenu" role="menu">${CONDS.filter(c=>c.when(seg)&&S.cond[c.id]===undefined).map(c=>`<button role="menuitem" data-a="addc" data-v="${c.id}">${esc(c.name)}<small>${esc(c.desc)}</small></button>`).join('')||'<div class="ngh">All available details are already added</div>'}</div>`:''}</span><button class="btn link" data-a="noop" data-v="Adds a group with its own and / or">+ Add condition group</button></div>
+    <div class="rules">${body}${warn}
+      <div class="aadd"><span class="narrow"><button class="btn link" data-a="segmenu" aria-expanded="${S.segMenu}">+ Add segment</button>${segMenu}</span><span class="narrow"><button class="btn link" data-a="nmenu" aria-expanded="${S.narrowMenu}">+ Add condition</button>${S.narrowMenu?`<div class="nmenu" role="menu">${CONDS.filter(c=>c.when(seg)&&S.cond[c.id]===undefined).map(c=>`<button role="menuitem" data-a="addc" data-v="${c.id}">${esc(c.name)}<small>${esc(c.desc)}</small></button>`).join('')||'<div class="ngh">All available details are already added</div>'}</div>`:''}</span><button class="btn link" data-a="noop" data-v="Adds a group with its own and / or">+ Add condition group</button></div>
     </div>
     <div class="actions"><span class="spacer"></span><button class="btn" data-a="advback">Cancel</button><button class="btn primary" data-a="advapply">Apply</button></div>
   </div>`;
 }
+// A line that names the gift the added gift rules are about.
+// Gift rules are shown as one block that starts by naming the gift, so every line reads as a sentence:
+// "Their last [repeated gift ▾]  was made [in the last 30 days ▾]  was at least [$100 ▾]".
+const GVERB = {method:'was paid by',campaign:'came through',gamt:'was at least',lastwhen:'was made'};
+function kindPill(plural){
+  const c=COND.gtype, cur=kindNow(), key='c:gtype', open=S.pop===key, opts=kindOpts(plural);
+  const label=(opts.find(o=>o.v===cur)||{l:cur}).l;
+  return `<span class="val"><button class="vbtn" data-a="pop" data-v="${key}" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="cset" data-c="gtype" data-v="${esc(o.v)}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
+}
+// Generic pick-one pill.
+function popPill(key,cur,opts,action,extra=''){
+  const open=S.pop===key, label=(opts.find(o=>o.v===cur)||{l:cur}).l;
+  return `<span class="val"><button class="vbtn" data-a="pop" data-v="${key}" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="${action}" ${extra} data-v="${esc(o.v)}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
+}
+// Rules a second gift can have. "after" ties it to their last recurring payment: did they keep giving after it?
+const XRULES = seg => ['campaign','method','gamt','lastwhen'].map(id=>({id,name:COND[id].name,desc:id==='method'?methodDesc():id==='lastwhen'?'At any time, in a window'+(seg.bucket.id==='rec'?', or after their last recurring payment':''):COND[id].desc}));
+const XVERB = {campaign:'came through',method:'was paid by',gamt:'was at least',lastwhen:'was made',after:'came after their last recurring payment'};
+function xOpts(b,id){ if(id==='method') return b.kind==='recurring'?OPT.methodrec:OPT.method; if(id==='lastwhen') return OPT.when.filter(o=>o.v!=='afterrec'||afterRecOk(b.kind)); return condOpts(COND[id]); }
+const methodDesc = k => (k||kindNow())==='recurring' ? 'Card, Apple / Google Pay, bank transfer or PayPal' : 'Card, bank, PayPal, cash, check, DAF, stock…';
+function extraBlocks(seg){
+  return S.xblocks.map((b,i)=>{
+    const plural=b.which==='any'||b.which==='none', neg=b.which==='none';
+    const kinds=kindOpts(plural);
+    const JOINS=[{v:'and',l:'And'},{v:'or',l:'Or'},{v:'not',l:'But not'}];
+    const lead = popPill('xj'+i,b.join||'and',JOINS.filter(o=>!(o.v==='not'&&b.which==='none')),'xbjoin',`data-i="${i}"`) + (i===0&&!giftShown()?pin('gjoin'):'');
+    const whichOpts = OPT.which.filter(o=>!(o.v==='none'&&b.join==='not'));
+    const head=`${lead}${popPill('xw'+i,b.which,whichOpts,'xbwhich',`data-i="${i}"`)}${popPill('xk'+i,b.kind,kinds,'xbkind',`data-i="${i}"`)}<button class="rm" data-a="xbrm" data-v="${i}" aria-label="Remove this gift">✕</button>${i===0?pin('another'):''}`;
+    const rows=Object.entries(b.cond).map(([id,v])=>{
+      const verb=neg?XVERB[id].replace(/^was /,'were '):XVERB[id];
+      const val = id==='after' ? '' : NUMOPT[COND[id].opt] ? numInput(`x:${i}:${id}`,v,NUMOPT[COND[id].opt],COND[id].name) : popPill(`xc${i}:${id}`,v,xOpts(b,id),'xbcset',`data-i="${i}" data-c="${id}"`);
+      return `<div class="rule gsub"><span>${esc(verb)}</span>${val}<button class="rm" data-a="xbcrm" data-i="${i}" data-v="${id}" aria-label="Remove rule">✕</button></div>`;
+    }).join('');
+    const avail=XRULES(seg).filter(r=>b.cond[r.id]===undefined);
+    const counting = false;
+    const howMany = '';
+    const countRow = '';
+    const menu=S.xbMenu===i?`<div class="nmenu" role="menu">${howMany}${avail.map(r=>`<button role="menuitem" data-a="xbaddc" data-i="${i}" data-v="${r.id}">${esc(r.name)}<small>${esc(r.desc)}</small></button>`).join('')}</div>`:'';
+    return `<div class="ggroup xgroup"><div class="rule ghead">${head}</div>${rows}${countRow}${(avail.length||howMany)?`<div class="rule gsub"><span class="narrow"><button class="btn link" data-a="xbmenu" data-v="${i}">+ Add a rule about this gift</button>${menu}</span></div>`:''}</div>`;
+  }).join('');
+}
+function xblockOk(x,b){
+  const test=g=>Object.entries(b.cond).every(([id,v])=>{ if(id==='after'){const r=lastK(x,'recurring');return !!r&&g.date>r.date;} return COND[id].gift(g,v); });
+  if(b.which==='first'||b.which==='last'){ const g=b.which==='first'?firstK(x,b.kind):lastK(x,b.kind); return !!g&&test(g); }
+  const some=ofK(x,b.kind).some(test); return b.which==='none'?!some:some;
+}
+function whichPill(){
+  const cur=whichNow(), open=S.pop==='which', label=OPT.which.find(o=>o.v===cur).l, wopts=OPT.which.filter(o=>!(o.v==='none'&&S.gjoin==='not'));
+  const tail = '';
+  return `${tail?'':''}<span class="val"><button class="vbtn" data-a="pop" data-v="which" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${wopts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="wset" data-v="${o.v}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>${tail}`;
+}
+const GJOINS=[{v:'and',l:'And'},{v:'or',l:'Or'},{v:'not',l:'But not'}];
+const giftShown = () => S.gbOn || activeConds().some(c=>c.level==='gift');
+function giftGroup(seg){
+  const gc=activeConds().filter(c=>c.level==='gift'&&c.id!=='gtype');
+  if(!giftShown()) return '';
+  const neg = giftNotOn(), w = whichNow(), plural = w==='any'||w==='none', pl = neg;
+  let head;
+  if(seg.giftName) head=`<span class="k">${esc(seg.giftName.charAt(0).toUpperCase()+seg.giftName.slice(1))}</span>`;
+  else if(!canWhich(seg)) head=`<span class="k">${esc(giftWord(seg).replace(/^their/,'Their'))}</span>`;
+  else head=`${whichPill()}${pin('neg')}${kindPill(plural)}`;
+  head = `${popPill('gj',S.gjoin||'and',GJOINS.filter(o=>!(o.v==='not'&&whichNow()==='none')),'gjset')}${pin('gjoin')}` + head;
+  const rm = `<button class="rm" data-a="gbrm" aria-label="Remove this gift and its rules">✕</button>`;
+  const rows = gc.map((c,i)=>`<div class="rule gsub"><span>${esc(((pl||countOn())?(GVERB[c.id]||c.name).replace(/^was /,'were '):(GVERB[c.id]||c.name)))}</span>${condPill(c)}<button class="rm" data-a="ucond" data-v="${c.id}" aria-label="Remove ${esc(c.name)} rule">✕</button>${i===0?pin('narrowrule')+pin('narrowrule2'):''}</div>`).join('');
+  const avail = CONDS.filter(c=>c.level==='gift'&&c.id!=='gtype'&&c.when(seg)&&S.cond[c.id]===undefined);
+  const howMany = '';
+  const countRow = '';
+  const menu = S.gbMenu ? `<div class="nmenu" role="menu">${howMany}${avail.map(c=>`<button role="menuitem" data-a="addc" data-v="${c.id}">${esc(c.name)}<small>${esc(c.id==='method'?methodDesc():c.id==='lastwhen'?'At any time, in a window'+(seg.bucket.id==='rec'?', or after their last recurring payment':''):c.desc)}</small></button>`).join('')}</div>` : '';
+  const adder = (avail.length||howMany) ? `<div class="rule gsub"><span class="narrow"><button class="btn link" data-a="gbmenu" aria-expanded="${!!S.gbMenu}">+ Add a rule about this gift</button>${menu}</span></div>` : '';
+  return `<div class="ggroup"><div class="rule ghead">${head}${rm}${pin('scope')}</div>${rows}${countRow}${adder}</div>`;
+}
+function basisPill(seg){
+  const opts = OPT.basis.filter(o=>o.v!=='pay'||seg.bucket.id==='rec'), cur=basisNow(), open=S.pop==='basis', label=(opts.find(o=>o.v===cur)||opts[0]).l;
+  return `<span class="val"><button class="vbtn" data-a="pop" data-v="basis" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="bset" data-v="${o.v}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
+}
+function personRows(seg){
+  return activeConds().filter(c=>c.level==='person').map(c=>`<div class="rule"><span class="k">${esc(c.label(seg))}</span>${c.canNot?`<button class="vbtn negbtn" data-a="neg" data-v="${c.id}" aria-pressed="${!!S.neg[c.id]}">${S.neg[c.id]?'is not':'is'} ⇄</button>`:''}${condPill(c)}${c.id==='giving'?basisPill(seg):''}${c.id==='count'?popPill('ckind',S.countKind||'any',kindOpts(true),'ckset'):''}${c.suffix&&c.suffix(seg)?`<span>${esc(c.suffix(seg))}</span>`:''}<button class="rm" data-a="ucond" data-v="${c.id}" aria-label="Remove ${esc(c.name)} rule">✕</button></div>`).join('');
+}
+// Plain-language readback of everything that applies.
+function readback(seg){
+  const p=S.params, cs=activeConds(), sh=seg.short(p);
+  const head = `<b>${esc(seg.name)}</b> (${esc(sh.charAt(0).toLowerCase()+sh.slice(1))})`;
+  const lbl = c => { const o=condOpts(c).find(o=>o.v===S.cond[c.id]); return esc(o?o.l:NUMOPT[c.opt]==='money'?money(S.cond[c.id]):S.cond[c.id]); };
+  const gc = cs.filter(c=>c.level==='gift'), pc = cs.filter(c=>c.level==='person');
+  const gpart = c => c.id==='gtype' ? '' : ({method:`was paid by <b>${lbl(c)}</b>`,campaign:`came through <b>${lbl(c)}</b>`,gamt:`was at least <b>${lbl(c)}</b>`,lastwhen:`was made <b>${lbl(c)}</b>`})[c.id]||esc(c.name);
+  const ppart = c => S.neg[c.id] ? ({country:`outside <b>${lbl(c)}</b>`,state:`outside <b>${lbl(c)}</b>`,sched:`not on a <b>${lbl(c).toLowerCase()}</b> schedule`})[c.id] : ({plan:`with <b>${lbl(c)}</b>`,sched:`on a <b>${lbl(c).toLowerCase()}</b> schedule`,ramt:`whose plan is set to at least <b>${lbl(c)}</b> per payment`,largest:`whose largest gift is at least <b>${lbl(c)}</b>`,total:`who have given at least <b>${lbl(c)}</b> in total`,count:`with at least <b>${lbl(c)}</b> ${esc(KP[S.countKind||'any'].replace('all gifts','gifts'))}`,giving:(()=>{const b=basisNow();return b==='pay'?`whose plan is at least <b>${lbl(c)}</b> per payment`:b==='life'?`who have given at least <b>${lbl(c)}</b> in total`:`who gave at least <b>${lbl(c)}</b> in the last <b>${winL(b)}</b>`})(),country:`in <b>${lbl(c)}</b>`,state:`in <b>${lbl(c)}</b>`,email:`who are <b>${lbl(c)}</b> to email`})[c.id]||esc(c.name);
+  const parts=[];
+  const gparts=[];
+  if(gc.length){
+    const parts=[];
+    const j=S.joinGift==='or'?' or ':' and ';
+    const cl = gc.map(gpart).filter(Boolean), k = kindNow();
+    if(giftNotOn()) parts.push(cl.length?`with <b>no ${esc(KP[k])}</b> that ${cl.map(t=>t.replace(/^was /,'were ')).join(j)}`:`who have never made a <b>${esc(KL[k])}</b>`); else
+    if(whichNow()==='first'||whichNow()==='last'||seg.giftName) parts.push(cl.length?`whose ${esc(giftWord(seg).replace(/^their /,''))} ${cl.join(j)}`:`who have made a <b>${esc(KL[k])}</b>`);
+    else parts.push(`who made a <b>${esc(KL[k])}</b>${cl.length?' that '+cl.join(j):''}`);
+    gparts.push(({and:'',or:'or anyone ',not:'but not those '}[S.gjoin||'and'])+parts[0].replace(/^who /,''));
+  }
+  pc.forEach(c=>parts.push(ppart(c)));
+  S.extra.forEach(id=>parts.push(`${S.extraNot[id]?'not':'also'} in <b>${esc(SEG[id].name)}</b>`));
+  const xparts=[];
+  S.xblocks.forEach((b,bi)=>{
+    const parts=[];
+    const cl=Object.entries(b.cond).map(([id,v])=>id==='after'?'came after their last recurring payment':`${XVERB[id]} <b>${esc(((xOpts(b,id)||[]).find(o=>o.v===v)||{l:NUMOPT[COND[id].opt]==='money'?money(v):v}).l)}</b>`);
+    if(b.which==='none') parts.push(`with <b>no ${esc(KP[b.kind])}</b>${cl.length?' that '+cl.map(t=>t.replace(/^was /,'were ')).join(' and '):''}`);
+    else if(b.which==='any') parts.push(`who ${(S.xblocks.indexOf(b)>0||giftShown())&&(b.join||'and')==='and'?'also ':''}made a <b>${esc(KL[b.kind])}</b>${cl.length?' that '+cl.join(' and '):''}`);
+    else if(cl.length) parts.push(`whose ${b.which} <b>${esc(KL[b.kind])}</b> ${cl.join(' and ')}`);
+    if(!parts.length) return;
+    const joined = ({and:'',or:'or anyone ',not:'but not those '}[b.join||'and']);
+    xparts.push(joined+(joined==='or anyone '?parts[0].replace(/^who /,''):parts[0]));
+  });
+  parts.push(...gparts, ...xparts);
+  const j=S.joinTop==='or'?', or ':', ';
+  return `<div class="readback"><b>Showing:</b> ${head}${parts.length?j+parts.join(j):''}.${pin('readback')}</div>`;
+}
 function renderPanel(seg){
   const avail = CONDS.filter(c=>c.when(seg));
-  const giftPhrase = seg.giftName?seg.giftName.replace('donation','gift'):seg.giftKey==='first'?'their first gift':seg.giftKey==='last'?'their most recent gift':'their gifts';
+  const giftPhrase = seg.giftKey?giftWord(seg):'one of their gifts';
   const item = c => S.cond[c.id]!==undefined ? '' : `<button role="menuitem" data-a="addc" data-v="${c.id}">${esc(c.name)}<small>${esc(c.desc)}</small></button>`;
-  const giftItems = avail.filter(c=>c.level==='gift').map(item).join(''), personItems = avail.filter(c=>c.level==='person').map(item).join('');
+  const hasGift = giftShown() || S.xblocks.length>0;
+  const giftItems = !hasGift
+    ? `<button role="menuitem" data-a="gbadd">A gift<small>Choose which gift (first, last, any or none of their gifts), then add rules about it</small></button>`
+    : S.xblocks.length<2 ? `<button role="menuitem" data-a="xbadd">Another gift<small>A separate gift with its own rules, for example a repeated gift after their last recurring payment</small></button>` : '';
+  const personItems = avail.filter(c=>c.level==='person').map(item).join('');
   return `<div class="panel">
-    <div class="crumb">${esc(seg.bucket.name)}  ›  ${esc(seg.name)}</div>
-    <div class="ph"><h4>${esc(seg.name)}</h4>${edited()?`<span class="tag">Edited</span><button class="btn link" data-a="reset">Reset</button>${pin('edited')}`:''}<span class="spacer"></span><button class="btn link" data-a="bucket" data-v="${seg.bucket.id}">Change segment</button></div>
+    <div class="crumb">${esc(groupOf(seg).name)}  ›  ${esc(seg.name)}</div>
+    <div class="ph"><h4>${esc(seg.name)}</h4>${edited()?`<span class="tag">Edited</span><button class="btn link" data-a="reset">Reset</button>${pin('edited')}`:''}<span class="spacer"></span><button class="btn link" data-a="bucket" data-v="${groupOf(seg).id}">Change segment</button></div>
     <div class="rules">
-      ${usesOr()?`<div class="ornote">Some rules are combined with “or”. <button class="btn link" data-a="adv">See how in the advanced filter</button></div>`:''}
+      
       <div class="rule">${seg.rule.map(t=>t[0]==='k'?`<span class="k">${esc(t[1])}</span>`:t[0]==='t'?`<span>${esc(t[1])}</span>`:valPill(seg,t[1],t[2])).join('')}${pin('rule')}</div>
-      ${activeConds().map((c,i)=>`<div class="rule"><span class="k">${esc(c.label(seg))}</span>${condPill(c)}${c.suffix&&c.suffix(seg)?`<span>${esc(c.suffix(seg))}</span>`:''}<button class="rm" data-a="ucond" data-v="${c.id}" aria-label="Remove ${esc(c.name)} rule">✕</button>${i===0?pin('narrowrule'):''}${c.level==='gift'&&seg.giftKey&&!activeConds().slice(0,i).some(d=>d.level==='gift')?pin('narrowrule2'):''}</div>`).join('')}
+      ${S.extra.map((id,k)=>`<div class="rule"><button class="vbtn negbtn" data-a="xneg" data-v="${id}" aria-pressed="${!!S.extraNot[id]}">${S.extraNot[id]?'Not in':k===0&&S.joinTop==='or'?'Or in':'Also in'} ⇄</button><span>${esc(SEG[id].name)}</span><button class="rm" data-a="xrm" data-v="${id}" aria-label="Remove ${esc(SEG[id].name)}">✕</button>${k===0?pin('segsimple'):''}</div>`).join('')}
+      ${giftGroup(seg)}
+      ${extraBlocks(seg)}
+      ${personRows(seg)}
+    <div class="narrow inrules"><button class="btn link" data-a="nmenu" aria-expanded="${S.narrowMenu}">+ Narrow down</button>${pin('nmenu')}
+      ${S.narrowMenu?`<div class="nmenu" role="menu">
+        ${giftItems?`<div class="ngh">About their gifts</div>${giftItems}`:''}
+        ${personItems?`<div class="ngh">About the person</div>${personItems}`:''}
+        ${!giftItems&&!personItems?`<div class="ngh">All available details are already added</div>`:''}
+      </div>`:''}
+</div>
     </div>
+    ${readback(seg)}
     <div class="promo">
       <div class="ptip"><span aria-hidden="true">💡</span><span>${esc(seg.hint)}</span></div>
       <div class="pact"><span class="bolt" aria-hidden="true">⚡</span><span class="ptext">${seg.auto?`<b>Do this automatically.</b> “${esc(AUTOS[seg.auto].name)}” sends ${AUTOS[seg.auto].mails.length} emails written for nonprofits as people join this list.`:seg.id==='major'?`<b>A personal touch works best here.</b> Major donors usually respond to staff reaching out directly. You can still set up your own emails.`:`<b>Do this automatically.</b> Send your own emails as people join this list.`}</span><button class="btn ${seg.id==='major'?'':'primary'}" data-a="automate">${seg.id==='major'?'Set up my own emails':'Automate this'}</button>${pin('hint')}</div>
     </div>
-    <div class="narrow"><button class="btn link" data-a="nmenu" aria-expanded="${S.narrowMenu}">+ Narrow down</button>${pin('nmenu')}
-      ${S.narrowMenu?`<div class="nmenu" role="menu">
-        ${giftItems?`<div class="ngh">About ${giftPhrase}</div>${giftItems}`:''}
-        ${personItems?`<div class="ngh">About the person</div>${personItems}`:''}
-        ${!giftItems&&!personItems?`<div class="ngh">All available details are already added</div>`:''}
-      </div>`:''}
-      <span class="spacer"></span><button class="btn link" data-a="adv">Advanced filter</button></div>
   </div>`;
 }
 function renderActions(r,seg){
@@ -1121,10 +1418,11 @@ function renderDefs(){
 // ---------- Actions ----------
 let toastTimer=null;
 function toast(msg){S.toast=msg;render();clearTimeout(toastTimer);toastTimer=setTimeout(()=>{S.toast=null;render()},2200)}
-function pick(id){S.adv=false;S.seg=id;S.params={...SEG[id].defaults};S.openBucket=null;S.pop=null;S.narrowMenu=false;S.cond={};S.joinTop='and';S.joinGift='and';S.modal=null}
+function pick(id){S.gjoin=null;S.whichN=null;S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[];S.segMenu=false;S.adv=false;S.seg=id;S.params={...SEG[id].defaults,gk:'any'};S.openBucket=null;S.pop=null;S.narrowMenu=false;S.cond={};S.joinTop='and';S.joinGift='and';S.modal=null}
 function goto(n){
-  const notes=S.notes; S=fresh(); S.notes=notes;
-  if(n===2){S.openBucket='lapse'}
+  const notes=S.notes, group=S.group; S=fresh(); S.notes=notes; S.group=group;
+  if(n===14){pick('mid');S.adv=true;S.extra=['lapsing'];return}
+  if(n===2){S.openBucket=S.group==='type'?'trep':'more'}
   if(n>=3){pick('lapsing')}
   if(n===4){S.params.from=3;S.pop='from'}
   if(n>=5){S.cond.campaign='Feed the Community'}
@@ -1140,7 +1438,7 @@ function goto(n){
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a]');
   const inMenu=e.target.closest('.menu,.vmenu,.nmenu,.bucket,.val,.narrow');
-  if(!el){ if(!inMenu && (S.openBucket||S.pop||S.narrowMenu)){S.openBucket=null;S.pop=null;S.narrowMenu=false;render()} return; }
+  if(!el){ if(!inMenu && (S.openBucket||S.pop||S.narrowMenu||S.segMenu||S.xbMenu!==null||S.gbMenu)){S.openBucket=null;S.pop=null;S.narrowMenu=false;S.segMenu=false;S.xbMenu=null;S.gbMenu=false;render()} return; }
   const a=el.dataset.a, v=el.dataset.v;
   if(a==='closebg' && e.target!==el) return;
   e.stopPropagation();
@@ -1148,23 +1446,54 @@ document.addEventListener('click',e=>{
     case 'tab': S.tab=v; break;
     case 'goto': goto(+v); break;
     case 'notes': S.notes=!S.notes; break;
+    case 'group': S.group=v; S.openBucket=null; S.pop=null; break;
     case 'bucket': S.openBucket = S.openBucket===v?null:v; S.pop=null; S.narrowMenu=false; break;
-    case 'clear': S.seg=null;S.params={};S.cond={};S.joinTop='and';S.joinGift='and';S.adv=false;S.openBucket=null;S.pop=null; break;
+    case 'clear': S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[];S.segMenu=false;S.seg=null;S.params={};S.cond={};S.joinTop='and';S.joinGift='and';S.adv=false;S.openBucket=null;S.pop=null; break;
     case 'pick': pick(v); break;
     case 'pop': S.pop = S.pop===v?null:v; S.narrowMenu=false; S.openBucket=null; break;
     case 'set': {
-      const k=el.dataset.k, val=+v; S.params[k]=val;
+      const k=el.dataset.k, val=isNaN(+v)?v:+v; S.params[k]=val;
       if(k==='from'&&S.params.to<=val){const o=OPT.months.find(o=>o.v>val);if(o)S.params.to=o.v}
       if(k==='to'&&S.params.from>=val){const o=[...OPT.months].reverse().find(o=>o.v<val);if(o)S.params.from=o.v}
       if(k==='min'&&S.params.max!==undefined&&S.params.max<=val){const o=OPT.money.find(o=>o.v>val);if(o)S.params.max=o.v}
       if(k==='max'&&S.params.min>=val){const o=[...OPT.money].reverse().find(o=>o.v<val);if(o)S.params.min=o.v}
       S.pop=null; break; }
-    case 'reset': S.params={...SEG[S.seg].defaults}; S.joinTop='and'; S.joinGift='and'; S.pop=null; break;
+    case 'reset': S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[]; S.params={...SEG[S.seg].defaults,gk:'any'}; S.joinTop='and'; S.joinGift='and'; S.pop=null; break;
     case 'join': if(v==='top') S.joinTop=S.joinTop==='and'?'or':'and'; else S.joinGift=S.joinGift==='and'?'or':'and'; S.pop=null; break;
-    case 'nmenu': S.narrowMenu=!S.narrowMenu; S.pop=null; break;
-    case 'addc': S.cond[v]=COND[v].def; S.narrowMenu=false; S.pop='c:'+v; break;
-    case 'cset': { const c=COND[el.dataset.c]; const o=condOpts(c).find(o=>String(o.v)===v); S.cond[c.id]=o?o.v:v; S.pop=null; break; }
-    case 'ucond': delete S.cond[v]; S.pop=null; break;
+    case 'nmenu': S.narrowMenu=!S.narrowMenu; S.segMenu=false; S.pop=null; break;
+    case 'segmenu': S.segMenu=!S.segMenu; S.narrowMenu=false; S.pop=null; break;
+    case 'xadd': if(!S.extra.includes(v)) S.extra.push(v); S.segMenu=false; break;
+    case 'xrm': S.extra=S.extra.filter(x=>x!==v); break;
+    case 'addc': S.gbMenu=false; S.cond[v]= v==='state' ? regionOpts()[0].v : v==='method' ? condOpts(COND.method)[0].v : COND[v].def; S.narrowMenu=false; S.pop='c:'+v; break;
+    case 'cset': { const c=COND[el.dataset.c]; const o=condOpts(c).find(o=>String(o.v)===v); S.cond[c.id]=o?o.v:v; S.pop=null;
+      if(c.id==='gtype'&&S.cond.method!==undefined&&!condOpts(COND.method).some(o=>o.v===S.cond.method)) S.cond.method=condOpts(COND.method)[0].v;
+      if(c.id==='gtype'&&S.cond.lastwhen==='afterrec'&&!afterRecOk(S.cond.gtype)) S.cond.lastwhen='in90';
+      if(c.id==='country'&&S.cond.state!==undefined&&!REGIONS[S.cond.country].includes(S.cond.state)) S.cond.state=REGIONS[S.cond.country][0];
+      break; }
+    case 'ucond': delete S.cond[v]; delete S.neg[v]; if(v==='giving') S.basis=null; if(!activeConds().some(c=>c.level==='gift')) S.giftNot=false; S.pop=null; break;
+    case 'neg': S.neg[v]=!S.neg[v]; S.pop=null; break;
+    case 'gneg': S.giftNot=!S.giftNot; S.pop=null; break;
+    case 'wset': S.which=v; if(v!=='any') S.whichN=null; S.gbMenu=false; S.pop=null; break;
+    case 'hmadd': S.which='any'; S.whichN=3; S.gbMenu=false; break;
+    case 'hmrm': S.whichN=null; break;
+    case 'xhmadd': { const b=S.xblocks[+el.dataset.i]; b.which='any'; b.n=3; S.xbMenu=null; break; }
+    case 'xhmrm': delete S.xblocks[+el.dataset.i].n; break;
+    case 'ckset': S.countKind=v; S.pop=null; break;
+    case 'xbadd': S.xblocks.push({which:'any',kind:'repeated',cond:{lastwhen:afterRecOk('repeated')?'afterrec':'in90'}}); S.xbMenu=S.xblocks.length-1; S.narrowMenu=false; break;
+    case 'xbrm': S.xblocks.splice(+v,1); S.pop=null; break;
+    case 'xbwhich': { const b=S.xblocks[+el.dataset.i]; b.which=v; if(v!=='any') delete b.n; S.xbMenu=null; S.pop=null; break; }
+    case 'gjset': S.gjoin=v; S.pop=null; break;
+    case 'xbjoin': S.xblocks[+el.dataset.i].join=v; S.pop=null; break;
+    case 'xbkind': { const b=S.xblocks[+el.dataset.i]; b.kind=v; if(v==='recurring'&&b.cond.method&&!OPT.methodrec.some(o=>o.v===b.cond.method)) b.cond.method='Card'; if(v==='recurring') delete b.cond.after; if(b.cond.lastwhen==='afterrec'&&!afterRecOk(v)) b.cond.lastwhen='in90'; S.pop=null; break; }
+    case 'gbadd': if(SEG[S.seg].ruleOnGift){ S.xblocks.push({which:'last',kind:S.params.kind||'any',cond:{}}); S.xbMenu=S.xblocks.length-1; } else { S.gbOn=true; S.gbMenu=true; } S.narrowMenu=false; break;
+    case 'gbrm': CONDS.filter(c=>c.level==='gift').forEach(c=>delete S.cond[c.id]); S.which=null; S.gbOn=false; S.gbMenu=false; S.pop=null; break;
+    case 'gbmenu': S.gbMenu=!S.gbMenu; S.narrowMenu=false; S.pop=null; break;
+    case 'xbmenu': S.xbMenu = S.xbMenu===+v?null:+v; S.pop=null; break;
+    case 'xbaddc': { const b=S.xblocks[+el.dataset.i]; b.cond[v]= v==='after'?true : v==='method'?xOpts(b,'method')[0].v : COND[v].def; S.xbMenu=null; break; }
+    case 'xbcrm': delete S.xblocks[+el.dataset.i].cond[v]; break;
+    case 'xbcset': { const b=S.xblocks[+el.dataset.i], o=xOpts(b,el.dataset.c).find(o=>String(o.v)===v); b.cond[el.dataset.c]=o?o.v:v; S.pop=null; break; }
+    case 'bset': S.basis=isNaN(+v)?v:+v; S.pop=null; break;
+    case 'xneg': S.extraNot[v]=!S.extraNot[v]; S.pop=null; break;
     case 'automate': S.modal='autochoose'; S.enroll='new'; break;
     case 'pickready': S.modal='automate'; break;
     case 'pickbuild': S.modal='build'; break;
@@ -1220,8 +1549,13 @@ document.addEventListener('click',e=>{
   render();
 });
 document.addEventListener('input',e=>{ const f=e.target.dataset&&e.target.dataset.f; if(f==='sname'||f==='semail'){ S[f]=e.target.value; return; } if(f){ S.draft[f]=e.target.value; if(S.savedFlash){ S.savedFlash=false; const b=document.querySelector('[data-a=edsave]'); if(b) b.textContent='Save'; } } });
+document.addEventListener('change',e=>{
+  const d=e.target.dataset&&e.target.dataset.num; if(!d) return;
+  const v=Math.max(1,Math.round(+e.target.value||0)), [t,k]=d.split(':');
+  if(t==='p'){ S.params[k]=v; if(S.params.min!==undefined&&S.params.max!==undefined&&S.params.min>S.params.max){ const a=S.params.min; S.params.min=S.params.max; S.params.max=a; } } else if(t==='w') S.whichN=Math.max(1,v); else if(t==='x'){ const [,i,id]=d.split(':'); if(id==='__n') S.xblocks[+i].n=Math.max(1,v); else S.xblocks[+i].cond[id]=v; } else S.cond[k]=v; render();
+});
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ if(S.modal){S.modal=null} else {S.openBucket=null;S.pop=null;S.narrowMenu=false} render(); }
+  if(e.key==='Escape'){ if(S.modal){S.modal=null} else {S.openBucket=null;S.pop=null;S.narrowMenu=false;S.segMenu=false;S.xbMenu=null;S.gbMenu=false} render(); }
   if((e.key==='Enter'||e.key===' ') && e.target.matches('[role="button"][data-a]')){e.preventDefault();e.target.click()}
 });
 render();
