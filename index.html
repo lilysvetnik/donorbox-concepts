@@ -135,7 +135,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outl
 .val{position:relative;display:inline-block}
 .vbtn{border:1px solid var(--blue-line);background:var(--surface);color:var(--blue-ink);font-weight:600;border-radius:7px;padding:4px 10px}
 .vbtn[aria-expanded="true"]{background:var(--blue-soft)}
-.vmenu{position:absolute;top:calc(100% + 6px);left:0;z-index:25;min-width:170px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px}
+.vmenu{position:absolute;top:calc(100% + 6px);left:0;z-index:40;min-width:170px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px}
 .vmenu button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:7px 10px}
 .vmenu button:hover{background:var(--surface-2)}
 .vmenu button[aria-checked="true"]{color:var(--blue-ink);font-weight:600}
@@ -194,6 +194,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outl
 .numin:focus{outline:none}
 .val.num:focus-within{box-shadow:0 0 0 3px var(--blue-soft)}
 .xgroup{border-left-color:var(--ink-2)}
+.andfix{display:inline-block;min-width:58px;padding:4px 10px;border:1px dashed var(--line-2);border-radius:8px;color:var(--muted);font-size:13px;text-align:left}
 .ggroup{display:flex;flex-direction:column;gap:6px;border-left:3px solid var(--blue-line);padding-left:10px}
 .gsub{padding-left:14px}
 .gsub.muted{color:var(--muted);font-size:13px}
@@ -708,7 +709,7 @@ const NOTES = {
    ['nmenu','Options fit the segment','“Narrow down” sits at the bottom of the rules, before the automation, so it reads as the next step in shaping the list. It only offers details that make sense for the segment: about their gifts, and about the person. The advanced filter is left out of this version and will be explored separately, probably as part of “Filter by details”.'],
    ['narrowrule','The user’s own rules have a ✕','The segment’s rule can’t be removed by accident. Only what the user added can.'],
    ['scope','The gift is named first','“Narrow down” offers a whole gift, not loose gift rules: “A gift” adds a block that starts by choosing which gift and what type, “Their last [repeated gift]”, and rules about it are added inside the block with “+ Add a rule about this gift”. Every line reads as part of one sentence about one gift. ✕ on the block removes the gift and its rules.'],
-   ['gjoin','Every gift says how it relates to the list','Each gift block starts with its connector to everything above it: And (they also match this gift), Or (this gift is enough on its own), or But not (leave out people who match it). The first gift has one too, so “Lapsed donors, but not those whose last gift came through the Gala” is one choice away.'],
+   ['gjoin','Narrow down or leave out: no “or” here','Every line states how it relates to the list. Rules about the person always add “and” (shown, not editable). A gift chooses between And (they must also match it) and But not (leave out people who match it). With only “and” and “but not”, the order of rules never changes the meaning, so the list can’t be misread. “Or” is left to the advanced filter, which will handle grouping.'],
    ['neg','Which gift, and “not”','The gift block starts by choosing which gift: their first, their last, any of their, or none of their. “None of their …” is exclusion. How many gifts someone made is a separate filter about the person, “Number of gifts: at least [3] [repeated gifts]”, not part of a gift block. Country, state and schedule switch between “is” and “is not”.'],
    ['giving','One giving filter, with a timeline','“Giving: at least $X” comes with a choice: per payment (their plan, recurring donors only), in total all time, or in total over the last 12 months to 30 days. It replaces separate “recurring amount” and “total donated” filters, and isn’t offered where it would repeat the segment’s own rule (Gave only once, Mid-level, Major). Amounts and counts are typed in.'],
    ['where','Country, then state','Location is split into Country and State / province. The state list follows the country: US states, Canadian provinces, UK nations or Australian states. Email marketing isn’t offered here: people who opted out are left out of emails automatically.'],
@@ -824,14 +825,18 @@ function results(){
     const parts=[];
     if(!seg.ruleOnGift) parts.push(seg.test(x,p));
     const gm = groupOk(x);
-    personConds.forEach(c=>parts.push(c.person(x,S.cond[c.id])!==!!S.neg[c.id]));
     // Added segments: each is checked on its own, with its own gift. They join at the person level.
     S.extra.forEach(id=>parts.push(SEG[id].test(x,SEG[id].defaults)!==!!S.extraNot[id]));
-    let r = comb(S.joinTop,parts);
-    // Each gift joins with its own connector: And / Or / But not
+    if(seg.ruleOnGift && gm!==null) parts.push(gm); // here the gift block holds the segment's own rule
+    let r = comb('and',parts);
+    // Then each rule or gift in the order shown: person rules are "and"; a gift uses its own And / Or / But not
     const joinIn = (r,ok,j) => j==='or' ? (r||ok) : j==='not' ? (r&&!ok) : (r&&ok);
-    if(gm!==null) r = joinIn(r, gm, S.gjoin||'and');
-    for(const b of S.xblocks) r = joinIn(r, xblockOk(x,b), b.join||'and');
+    const steps = [
+      ...personConds.map(c=>({seq:seqOf('p:'+c.id), run:r=>r && (c.person(x,S.cond[c.id])!==!!S.neg[c.id])})),
+      ...(!seg.ruleOnGift && gm!==null ? [{seq:seqOf('gift'), run:r=>joinIn(r,gm,S.gjoin||'and')}] : []),
+      ...S.xblocks.map((b,i)=>({seq:b.seq??(2000+i), run:r=>joinIn(r,xblockOk(x,b),b.join||'and')}))
+    ].sort((a,b)=>a.seq-b.seq);
+    for(const st of steps) r = st.run(r);
     return r;
   });
   const gifts = people.flatMap(x=>matchingGift(x,seg).filter(g=>giftNotOn()||!giftConds.length||giftOk(g)));
@@ -1015,11 +1020,12 @@ const XRULES = seg => ['campaign','method','gamt','lastwhen'].map(id=>({id,name:
 const XVERB = {campaign:'came through',method:'was paid by',gamt:'was at least',lastwhen:'was made',after:'came after their last recurring payment'};
 function xOpts(b,id){ if(id==='method') return b.kind==='recurring'?OPT.methodrec:OPT.method; if(id==='lastwhen') return OPT.when.filter(o=>o.v!=='afterrec'||afterRecOk(b.kind)); return condOpts(COND[id]); }
 const methodDesc = k => (k||kindNow())==='recurring' ? 'Card, Apple / Google Pay, bank transfer or PayPal' : 'Card, bank, PayPal, cash, check, DAF, stock…';
-function extraBlocks(seg){
+function extraBlocks(seg){ return extraBlockItems(seg).map(o=>o.html).join(''); }
+function extraBlockItems(seg){
   return S.xblocks.map((b,i)=>{
     const plural=b.which==='any'||b.which==='none', neg=b.which==='none';
     const kinds=kindOpts(plural);
-    const JOINS=[{v:'and',l:'And'},{v:'or',l:'Or'},{v:'not',l:'But not'}];
+    const JOINS=GJOINS;
     const lead = popPill('xj'+i,b.join||'and',JOINS.filter(o=>!(o.v==='not'&&b.which==='none')),'xbjoin',`data-i="${i}"`) + (i===0&&!giftShown()?pin('gjoin'):'');
     const whichOpts = OPT.which.filter(o=>!(o.v==='none'&&b.join==='not'));
     const head=`${lead}${popPill('xw'+i,b.which,whichOpts,'xbwhich',`data-i="${i}"`)}${popPill('xk'+i,b.kind,kinds,'xbkind',`data-i="${i}"`)}<button class="rm" data-a="xbrm" data-v="${i}" aria-label="Remove this gift">✕</button>${i===0?pin('another'):''}`;
@@ -1033,8 +1039,8 @@ function extraBlocks(seg){
     const howMany = '';
     const countRow = '';
     const menu=S.xbMenu===i?`<div class="nmenu" role="menu">${howMany}${avail.map(r=>`<button role="menuitem" data-a="xbaddc" data-i="${i}" data-v="${r.id}">${esc(r.name)}<small>${esc(r.desc)}</small></button>`).join('')}</div>`:'';
-    return `<div class="ggroup xgroup"><div class="rule ghead">${head}</div>${rows}${countRow}${(avail.length||howMany)?`<div class="rule gsub"><span class="narrow"><button class="btn link" data-a="xbmenu" data-v="${i}">+ Add a rule about this gift</button>${menu}</span></div>`:''}</div>`;
-  }).join('');
+    return {seq:b.seq??(2000+i), html:`<div class="ggroup xgroup"><div class="rule ghead">${head}</div>${rows}${countRow}${(avail.length||howMany)?`<div class="rule gsub"><span class="narrow"><button class="btn link" data-a="xbmenu" data-v="${i}">+ Add a rule about this gift</button>${menu}</span></div>`:''}</div>`};
+  });
 }
 function xblockOk(x,b){
   const test=g=>Object.entries(b.cond).every(([id,v])=>{ if(id==='after'){const r=lastK(x,'recurring');return !!r&&g.date>r.date;} return COND[id].gift(g,v); });
@@ -1046,7 +1052,10 @@ function whichPill(){
   const tail = '';
   return `${tail?'':''}<span class="val"><button class="vbtn" data-a="pop" data-v="which" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${wopts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="wset" data-v="${o.v}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>${tail}`;
 }
-const GJOINS=[{v:'and',l:'And'},{v:'or',l:'Or'},{v:'not',l:'But not'}];
+// Rules and gifts keep the order they were added in; the list is built top to bottom in that order.
+const seqOf = key => (S.seq&&S.seq[key]!==undefined) ? S.seq[key] : ({gift:500}[key] ?? 1000);
+const bumpSeq = key => { S.seq=S.seq||{}; S.seqN=(S.seqN||0)+1; if(key) S.seq[key]=S.seqN; return S.seqN; };
+const GJOINS=[{v:'and',l:'And'},{v:'not',l:'But not'}];
 const giftShown = () => S.gbOn || activeConds().some(c=>c.level==='gift');
 function giftGroup(seg){
   const gc=activeConds().filter(c=>c.level==='gift'&&c.id!=='gtype');
@@ -1070,8 +1079,9 @@ function basisPill(seg){
   const opts = OPT.basis.filter(o=>o.v!=='pay'||seg.bucket.id==='rec'), cur=basisNow(), open=S.pop==='basis', label=(opts.find(o=>o.v===cur)||opts[0]).l;
   return `<span class="val"><button class="vbtn" data-a="pop" data-v="basis" aria-expanded="${open}" aria-haspopup="listbox">${esc(label)} ▾</button>${open?`<span class="vmenu" role="listbox">${opts.map(o=>`<button role="option" aria-checked="${o.v===cur}" data-a="bset" data-v="${o.v}">${esc(o.l)}</button>`).join('')}</span>`:''}</span>`;
 }
-function personRows(seg){
-  return activeConds().filter(c=>c.level==='person').map(c=>`<div class="rule"><span class="k">${esc(c.label(seg))}</span>${c.canNot?`<button class="vbtn negbtn" data-a="neg" data-v="${c.id}" aria-pressed="${!!S.neg[c.id]}">${S.neg[c.id]?'is not':'is'} ⇄</button>`:''}${condPill(c)}${c.id==='giving'?basisPill(seg):''}${c.id==='count'?popPill('ckind',S.countKind||'any',kindOpts(true),'ckset'):''}${c.suffix&&c.suffix(seg)?`<span>${esc(c.suffix(seg))}</span>`:''}<button class="rm" data-a="ucond" data-v="${c.id}" aria-label="Remove ${esc(c.name)} rule">✕</button></div>`).join('');
+function personRows(seg){ return personRowItems(seg).map(o=>o.html).join(''); }
+function personRowItems(seg){
+  return activeConds().filter(c=>c.level==='person').map(c=>({seq:seqOf('p:'+c.id), html:`<div class="rule"><span class="andfix" title="Rules about the person always combine with and">and</span><span class="k">${esc(c.label(seg))}</span>${c.canNot?`<button class="vbtn negbtn" data-a="neg" data-v="${c.id}" aria-pressed="${!!S.neg[c.id]}">${S.neg[c.id]?'is not':'is'} ⇄</button>`:''}${condPill(c)}${c.id==='giving'?basisPill(seg):''}${c.id==='count'?popPill('ckind',S.countKind||'any',kindOpts(true),'ckset'):''}${c.suffix&&c.suffix(seg)?`<span>${esc(c.suffix(seg))}</span>`:''}<button class="rm" data-a="ucond" data-v="${c.id}" aria-label="Remove ${esc(c.name)} rule">✕</button></div>`}));
 }
 // Plain-language readback of everything that applies.
 function readback(seg){
@@ -1090,9 +1100,10 @@ function readback(seg){
     if(giftNotOn()) parts.push(cl.length?`with <b>no ${esc(KP[k])}</b> that ${cl.map(t=>t.replace(/^was /,'were ')).join(j)}`:`who have never made a <b>${esc(KL[k])}</b>`); else
     if(whichNow()==='first'||whichNow()==='last'||seg.giftName) parts.push(cl.length?`whose ${esc(giftWord(seg).replace(/^their /,''))} ${cl.join(j)}`:`who have made a <b>${esc(KL[k])}</b>`);
     else parts.push(`who made a <b>${esc(KL[k])}</b>${cl.length?' that '+cl.join(j):''}`);
-    gparts.push(({and:'',or:'or anyone ',not:'but not those '}[S.gjoin||'and'])+parts[0].replace(/^who /,''));
+    const jw=({and:'',or:'or anyone ',not:'but not those '}[S.gjoin||'and']);
+    gparts.push({seq:seqOf('gift'), not:(S.gjoin==='not'), t: jw+(jw==='or anyone '?parts[0].replace(/^who /,''):parts[0])});
   }
-  pc.forEach(c=>parts.push(ppart(c)));
+  const pparts = pc.map(c=>({seq:seqOf('p:'+c.id), t:ppart(c)}));
   S.extra.forEach(id=>parts.push(`${S.extraNot[id]?'not':'also'} in <b>${esc(SEG[id].name)}</b>`));
   const xparts=[];
   S.xblocks.forEach((b,bi)=>{
@@ -1103,9 +1114,9 @@ function readback(seg){
     else if(cl.length) parts.push(`whose ${b.which} <b>${esc(KL[b.kind])}</b> ${cl.join(' and ')}`);
     if(!parts.length) return;
     const joined = ({and:'',or:'or anyone ',not:'but not those '}[b.join||'and']);
-    xparts.push(joined+(joined==='or anyone '?parts[0].replace(/^who /,''):parts[0]));
+    xparts.push({seq:b.seq??(2000+bi), not:(b.join==='not'), t: joined+(joined==='or anyone '?parts[0].replace(/^who /,''):parts[0])});
   });
-  parts.push(...gparts, ...xparts);
+  parts.push(...[...pparts, ...gparts, ...xparts].sort((a,b)=>(!!a.not-!!b.not)||(a.seq-b.seq)).map(o=>o.t));
   const j=S.joinTop==='or'?', or ':', ';
   return `<div class="readback"><b>Showing:</b> ${head}${parts.length?j+parts.join(j):''}.${pin('readback')}</div>`;
 }
@@ -1125,9 +1136,7 @@ function renderPanel(seg){
       
       <div class="rule">${seg.rule.map(t=>t[0]==='k'?`<span class="k">${esc(t[1])}</span>`:t[0]==='t'?`<span>${esc(t[1])}</span>`:valPill(seg,t[1],t[2])).join('')}${pin('rule')}</div>
       ${S.extra.map((id,k)=>`<div class="rule"><button class="vbtn negbtn" data-a="xneg" data-v="${id}" aria-pressed="${!!S.extraNot[id]}">${S.extraNot[id]?'Not in':k===0&&S.joinTop==='or'?'Or in':'Also in'} ⇄</button><span>${esc(SEG[id].name)}</span><button class="rm" data-a="xrm" data-v="${id}" aria-label="Remove ${esc(SEG[id].name)}">✕</button>${k===0?pin('segsimple'):''}</div>`).join('')}
-      ${giftGroup(seg)}
-      ${extraBlocks(seg)}
-      ${personRows(seg)}
+      ${[{seq:seqOf('gift'),html:giftGroup(seg)}, ...extraBlockItems(seg), ...personRowItems(seg)].sort((a,b)=>a.seq-b.seq).map(o=>o.html).join('')}
     <div class="narrow inrules"><button class="btn link" data-a="nmenu" aria-expanded="${S.narrowMenu}">+ Narrow down</button>${pin('nmenu')}
       ${S.narrowMenu?`<div class="nmenu" role="menu">
         ${giftItems?`<div class="ngh">About their gifts</div>${giftItems}`:''}
@@ -1418,7 +1427,7 @@ function renderDefs(){
 // ---------- Actions ----------
 let toastTimer=null;
 function toast(msg){S.toast=msg;render();clearTimeout(toastTimer);toastTimer=setTimeout(()=>{S.toast=null;render()},2200)}
-function pick(id){S.gjoin=null;S.whichN=null;S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[];S.segMenu=false;S.adv=false;S.seg=id;S.params={...SEG[id].defaults,gk:'any'};S.openBucket=null;S.pop=null;S.narrowMenu=false;S.cond={};S.joinTop='and';S.joinGift='and';S.modal=null}
+function pick(id){S.seq={};S.seqN=0;S.gjoin=null;S.whichN=null;S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[];S.segMenu=false;S.adv=false;S.seg=id;S.params={...SEG[id].defaults,gk:'any'};S.openBucket=null;S.pop=null;S.narrowMenu=false;S.cond={};S.joinTop='and';S.joinGift='and';S.modal=null}
 function goto(n){
   const notes=S.notes, group=S.group; S=fresh(); S.notes=notes; S.group=group;
   if(n===14){pick('mid');S.adv=true;S.extra=['lapsing'];return}
@@ -1448,9 +1457,9 @@ document.addEventListener('click',e=>{
     case 'notes': S.notes=!S.notes; break;
     case 'group': S.group=v; S.openBucket=null; S.pop=null; break;
     case 'bucket': S.openBucket = S.openBucket===v?null:v; S.pop=null; S.narrowMenu=false; break;
-    case 'clear': S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[];S.segMenu=false;S.seg=null;S.params={};S.cond={};S.joinTop='and';S.joinGift='and';S.adv=false;S.openBucket=null;S.pop=null; break;
+    case 'clear': S.seq={};S.seqN=0;S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[];S.segMenu=false;S.seg=null;S.params={};S.cond={};S.joinTop='and';S.joinGift='and';S.adv=false;S.openBucket=null;S.pop=null; break;
     case 'pick': pick(v); break;
-    case 'pop': S.pop = S.pop===v?null:v; S.narrowMenu=false; S.openBucket=null; break;
+    case 'pop': S.pop = S.pop===v?null:v; S.narrowMenu=false; S.openBucket=null; S.gbMenu=false; S.xbMenu=null; S.segMenu=false; break;
     case 'set': {
       const k=el.dataset.k, val=isNaN(+v)?v:+v; S.params[k]=val;
       if(k==='from'&&S.params.to<=val){const o=OPT.months.find(o=>o.v>val);if(o)S.params.to=o.v}
@@ -1458,13 +1467,13 @@ document.addEventListener('click',e=>{
       if(k==='min'&&S.params.max!==undefined&&S.params.max<=val){const o=OPT.money.find(o=>o.v>val);if(o)S.params.max=o.v}
       if(k==='max'&&S.params.min>=val){const o=[...OPT.money].reverse().find(o=>o.v<val);if(o)S.params.min=o.v}
       S.pop=null; break; }
-    case 'reset': S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[]; S.params={...SEG[S.seg].defaults,gk:'any'}; S.joinTop='and'; S.joinGift='and'; S.pop=null; break;
+    case 'reset': S.seq={};S.seqN=0;S.gbOn=false;S.gbMenu=false;S.xblocks=[];S.xbMenu=null;S.countKind=null;S.which=null;S.basis=null;S.neg={};S.giftNot=false;S.extraNot={};S.extra=[]; S.params={...SEG[S.seg].defaults,gk:'any'}; S.joinTop='and'; S.joinGift='and'; S.pop=null; break;
     case 'join': if(v==='top') S.joinTop=S.joinTop==='and'?'or':'and'; else S.joinGift=S.joinGift==='and'?'or':'and'; S.pop=null; break;
     case 'nmenu': S.narrowMenu=!S.narrowMenu; S.segMenu=false; S.pop=null; break;
     case 'segmenu': S.segMenu=!S.segMenu; S.narrowMenu=false; S.pop=null; break;
     case 'xadd': if(!S.extra.includes(v)) S.extra.push(v); S.segMenu=false; break;
     case 'xrm': S.extra=S.extra.filter(x=>x!==v); break;
-    case 'addc': S.gbMenu=false; S.cond[v]= v==='state' ? regionOpts()[0].v : v==='method' ? condOpts(COND.method)[0].v : COND[v].def; S.narrowMenu=false; S.pop='c:'+v; break;
+    case 'addc': if(COND[v].level==='person') bumpSeq('p:'+v); else if(S.seq?.gift===undefined) bumpSeq('gift'); S.gbMenu=false; S.cond[v]= v==='state' ? regionOpts()[0].v : v==='method' ? condOpts(COND.method)[0].v : COND[v].def; S.narrowMenu=false; S.pop='c:'+v; break;
     case 'cset': { const c=COND[el.dataset.c]; const o=condOpts(c).find(o=>String(o.v)===v); S.cond[c.id]=o?o.v:v; S.pop=null;
       if(c.id==='gtype'&&S.cond.method!==undefined&&!condOpts(COND.method).some(o=>o.v===S.cond.method)) S.cond.method=condOpts(COND.method)[0].v;
       if(c.id==='gtype'&&S.cond.lastwhen==='afterrec'&&!afterRecOk(S.cond.gtype)) S.cond.lastwhen='in90';
@@ -1479,14 +1488,14 @@ document.addEventListener('click',e=>{
     case 'xhmadd': { const b=S.xblocks[+el.dataset.i]; b.which='any'; b.n=3; S.xbMenu=null; break; }
     case 'xhmrm': delete S.xblocks[+el.dataset.i].n; break;
     case 'ckset': S.countKind=v; S.pop=null; break;
-    case 'xbadd': S.xblocks.push({which:'any',kind:'repeated',cond:{lastwhen:afterRecOk('repeated')?'afterrec':'in90'}}); S.xbMenu=S.xblocks.length-1; S.narrowMenu=false; break;
+    case 'xbadd': S.xblocks.push({which:'any',kind:'repeated',cond:{lastwhen:afterRecOk('repeated')?'afterrec':'in90'},seq:bumpSeq()}); S.xbMenu=S.xblocks.length-1; S.narrowMenu=false; break;
     case 'xbrm': S.xblocks.splice(+v,1); S.pop=null; break;
     case 'xbwhich': { const b=S.xblocks[+el.dataset.i]; b.which=v; if(v!=='any') delete b.n; S.xbMenu=null; S.pop=null; break; }
     case 'gjset': S.gjoin=v; S.pop=null; break;
     case 'xbjoin': S.xblocks[+el.dataset.i].join=v; S.pop=null; break;
     case 'xbkind': { const b=S.xblocks[+el.dataset.i]; b.kind=v; if(v==='recurring'&&b.cond.method&&!OPT.methodrec.some(o=>o.v===b.cond.method)) b.cond.method='Card'; if(v==='recurring') delete b.cond.after; if(b.cond.lastwhen==='afterrec'&&!afterRecOk(v)) b.cond.lastwhen='in90'; S.pop=null; break; }
-    case 'gbadd': if(SEG[S.seg].ruleOnGift){ S.xblocks.push({which:'last',kind:S.params.kind||'any',cond:{}}); S.xbMenu=S.xblocks.length-1; } else { S.gbOn=true; S.gbMenu=true; } S.narrowMenu=false; break;
-    case 'gbrm': CONDS.filter(c=>c.level==='gift').forEach(c=>delete S.cond[c.id]); S.which=null; S.gbOn=false; S.gbMenu=false; S.pop=null; break;
+    case 'gbadd': if(SEG[S.seg].ruleOnGift){ S.xblocks.push({which:'last',kind:S.params.kind||'any',cond:{},seq:bumpSeq()}); S.xbMenu=S.xblocks.length-1; } else { S.gbOn=true; S.gbMenu=true; bumpSeq('gift'); } S.narrowMenu=false; break;
+    case 'gbrm': if(S.seq) delete S.seq.gift; CONDS.filter(c=>c.level==='gift').forEach(c=>delete S.cond[c.id]); S.which=null; S.gbOn=false; S.gbMenu=false; S.pop=null; break;
     case 'gbmenu': S.gbMenu=!S.gbMenu; S.narrowMenu=false; S.pop=null; break;
     case 'xbmenu': S.xbMenu = S.xbMenu===+v?null:+v; S.pop=null; break;
     case 'xbaddc': { const b=S.xblocks[+el.dataset.i]; b.cond[v]= v==='after'?true : v==='method'?xOpts(b,'method')[0].v : COND[v].def; S.xbMenu=null; break; }
